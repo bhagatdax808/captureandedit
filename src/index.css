@@ -8,8 +8,8 @@
   --font-main: "Manrope", "Manrope Placeholder", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-serif: "Playfair Display", Georgia, "Times New Roman", serif;
 
-  --color-bg-light: #f1f2f3;
-  --color-bg-card: #e5e7eb;
+  --color-bg-light: #ffffff;
+  --color-bg-card: #f9fafb;
   --color-dark: #050608;
   --color-dark-surface: #0e1115;
   --color-dark-card: #151921;
@@ -38,7 +38,7 @@
 html {
   scroll-behavior: smooth;
   font-family: var(--font-main);
-  background-color: var(--color-bg-light);
+  background-color: #ffffff;
   color: var(--color-text-main);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -48,6 +48,11 @@ body {
   overflow-x: hidden;
   line-height: 1.5;
   padding: 12px;
+  background-color: #ffffff;
+}
+
+.app-root, .main-content-flow, .home-page-container {
+  background-color: #ffffff;
 }
 
 img, video {
@@ -1071,7 +1076,8 @@ footer.site-footer {
 
 /* Fan Card */
 .bento-fan-card {
-  background: #f5f5f4;
+  background: #f8f9fa;
+  border: 1px solid #eaeaea;
   padding: 2.2rem 2.2rem 2rem;
   display: flex;
   flex-direction: column;
@@ -1161,7 +1167,8 @@ footer.site-footer {
 
 /* 10-Photo Collage Grid Card */
 .bento-grid-card {
-  background: #f5f5f4;
+  background: #f8f9fa;
+  border: 1px solid #eaeaea;
   padding: 12px;
   overflow: hidden;
   display: flex;
@@ -2459,6 +2466,18 @@ footer.site-footer {
   letter-spacing: -0.035em !important;
   color: #111111 !important;
   margin: 0 !important;
+}
+.scroll-reveal-quote {
+  line-height: 1.25 !important;
+}
+.reveal-word {
+  display: inline-block;
+  opacity: 0.18;
+  filter: blur(1.5px);
+  transform: translate3d(0, 5px, 0);
+  transition: opacity 0.12s ease-out, transform 0.12s ease-out, filter 0.12s ease-out;
+  will-change: opacity, transform, filter;
+  margin-right: 0.28em;
 }
 .about-quote .serif-italic,
 .serif-italic {

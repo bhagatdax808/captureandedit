@@ -1,9 +1,100 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Camera, Film, Sun, Award, Play, Pause, Maximize2, ArrowUpRight } from 'lucide-react';
+
+const quoteWords = [
+  { text: "“I", italic: false },
+  { text: "don't", italic: false },
+  { text: "simply", italic: false },
+  { text: "click", italic: false },
+  { text: "pictures", italic: true },
+  { text: "I", italic: false },
+  { text: "preserve", italic: false },
+  { text: "genuine", italic: false },
+  { text: "emotions,", italic: true },
+  { text: "fleeting", italic: false },
+  { text: "memories,", italic: false },
+  { text: "and", italic: false },
+  { text: "hidden", italic: false },
+  { text: "stories", italic: false },
+  { text: "that", italic: false },
+  { text: "bring", italic: true },
+  { text: "life", italic: true },
+  { text: "to", italic: false },
+  { text: "every", italic: false },
+  { text: "shot.”", italic: false }
+];
 
 export default function AboutPage({ onOpenChat }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeGearTab, setActiveGearTab] = useState('bodies');
+  const quoteRef = useRef(null);
+
+  useEffect(() => {
+    const quoteEl = quoteRef.current;
+    if (!quoteEl) return;
+
+    const words = quoteEl.querySelectorAll('.reveal-word');
+    if (!words.length) return;
+
+    let ticking = false;
+
+    const updateReveal = () => {
+      const rect = quoteEl.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+
+      const startTrigger = windowHeight * 0.85;
+      const endTrigger = windowHeight * 0.35;
+      const progress = Math.min(1, Math.max(0, (startTrigger - rect.top) / (startTrigger - endTrigger)));
+
+      const total = words.length;
+      words.forEach((word, index) => {
+        const wordStart = index / total;
+        const wordEnd = (index + 1) / total;
+
+        let wordProgress = 0;
+        if (progress >= wordEnd) {
+          wordProgress = 1;
+        } else if (progress <= wordStart) {
+          wordProgress = 0;
+        } else {
+          wordProgress = (progress - wordStart) / (wordEnd - wordStart);
+        }
+
+        const currentOpacity = 0.18 + wordProgress * 0.82;
+        const currentY = (1 - wordProgress) * 5;
+        const currentBlur = (1 - wordProgress) * 1.5;
+
+        word.style.opacity = currentOpacity.toFixed(3);
+        word.style.transform = `translate3d(0, ${currentY.toFixed(1)}px, 0)`;
+        word.style.filter = currentBlur > 0.05 ? `blur(${currentBlur.toFixed(1)}px)` : 'none';
+      });
+
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(updateReveal);
+        ticking = true;
+      }
+    };
+
+    updateReveal();
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    if (window.__lenis) {
+      window.__lenis.on('scroll', onScroll);
+    }
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (window.__lenis) {
+        window.__lenis.off('scroll', onScroll);
+      }
+    };
+  }, []);
 
   const gearData = {
     bodies: [
@@ -69,8 +160,15 @@ export default function AboutPage({ onOpenChat }) {
               </div>
             </div>
             <div className="about-quote-col">
-              <h2 className="about-quote">
-                &ldquo;I don't simply click <span className="serif-italic">pictures</span> I preserve genuine <span className="serif-italic">emotions</span>, fleeting memories, and hidden stories that <span className="serif-italic">bring life</span> to every shot.&rdquo;
+              <h2 className="about-quote scroll-reveal-quote" ref={quoteRef}>
+                {quoteWords.map((item, idx) => (
+                  <span
+                    key={idx}
+                    className={`reveal-word ${item.italic ? 'serif-italic' : ''}`}
+                  >
+                    {item.text}
+                  </span>
+                ))}
               </h2>
             </div>
           </div>
