@@ -1,10 +1,56 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { clientAvatars } from '../data/portfolioData';
 
 export default function Hero({ onOpenChat }) {
+  const heroRef = useRef(null);
+  const bgCanvasRef = useRef(null);
+
+  useEffect(() => {
+    const heroEl = heroRef.current;
+    const bgCanvas = bgCanvasRef.current;
+    if (!heroEl || !bgCanvas) return;
+
+    let ticking = false;
+
+    const handleScroll = () => {
+      const scrollY = window.scrollY || window.pageYOffset;
+      const heroHeight = heroEl.offsetHeight;
+
+      // Keep background image in its place while the hero frame scrolls naturally
+      if (scrollY <= heroHeight + 150) {
+        bgCanvas.style.transform = 'translate3d(0, ' + scrollY + 'px, 0)';
+      }
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(handleScroll);
+        ticking = true;
+      }
+    };
+
+    handleScroll();
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+
+    if (window.__lenis) {
+      window.__lenis.on('scroll', onScroll);
+    }
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (window.__lenis) {
+        window.__lenis.off('scroll', onScroll);
+      }
+    };
+  }, []);
+
   return (
-    <section className="hero-stage" id="hero">
-      <div className="hero-bg-fixed-canvas">
+    <section className="hero-stage" id="hero" ref={heroRef}>
+      <div className="hero-bg-fixed-canvas" ref={bgCanvasRef}>
         <img
           src="/photos/firstpage.webp"
           alt="Creative photography of model with light visor"

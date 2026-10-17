@@ -172,11 +172,13 @@ button {
 
 .hero-bg-fixed-canvas {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   z-index: 1;
   pointer-events: none;
+  will-change: transform;
 }
 
 .hero-bg-media {
@@ -2005,20 +2007,54 @@ footer.site-footer {
 }
 
 /* ==========================================================================
-   3D CYLINDER CURVED CAROUSEL (RIBBON SHOWCASE)
+/* ==========================================================================
+   NEGATIVE-Z CONVEX CURVED GALLERY (HALF-CIRCULAR & INFINITE SCROLLING)
+   Reference: Negative-Z Convex Arc with Dynamic Shading & Z-Index
    ========================================================================== */
+:root {
+  --gallery-persp: 320px;
+  --gallery-persp-x: 50%;
+  --gallery-persp-y: 50%;
+  --gallery-track-z: -220px;
+  --gallery-radius-z: -630px;
+  --gallery-card-w: 210px;
+  --gallery-card-h: 295px;
+  --gallery-angle-step: 22.5deg;
+}
+
+@media (max-width: 900px) {
+  :root {
+    --gallery-persp: 300px;
+    --gallery-track-z: -190px;
+    --gallery-radius-z: -520px;
+    --gallery-card-w: 180px;
+    --gallery-card-h: 255px;
+  }
+}
+
+@media (max-width: 600px) {
+  :root {
+    --gallery-persp: 270px;
+    --gallery-track-z: -160px;
+    --gallery-radius-z: -420px;
+    --gallery-card-w: 150px;
+    --gallery-card-h: 215px;
+  }
+}
+
 .ribbon-showcase-section {
   width: 100%;
-  padding: 5.5rem 0 6.5rem;
+  padding: 5rem 0 6rem;
   overflow: hidden;
-  background: #fafaf9;
+  background: #ffffff;
   position: relative;
   user-select: none;
 }
 
 .ribbon-outer-header {
   text-align: center;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
 }
 
 .ribbon-subheading {
@@ -2036,92 +2072,85 @@ footer.site-footer {
   font-weight: 500;
 }
 
-.ribbon-cylinder-stage {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-  padding: 2.5rem 0 3.5rem;
+.ribbon-convex-viewport {
+  width: 100vw;
+  max-width: 100%;
+  height: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: var(--gallery-persp);
+  perspective-origin: var(--gallery-persp-x) var(--gallery-persp-y);
   cursor: grab;
+  overflow: hidden;
+  position: relative;
   touch-action: pan-y;
 }
 
-.ribbon-cylinder-stage.grabbing {
+.ribbon-convex-viewport:active,
+.ribbon-convex-viewport.grabbing {
   cursor: grabbing;
 }
 
-.ribbon-cylinder-viewport {
-  width: 100%;
-  overflow: visible;
-  perspective: 1400px;
-  perspective-origin: 50% 50%;
-}
-
-.ribbon-3d-track {
-  display: flex;
-  gap: 20px;
-  width: max-content;
-  will-change: transform;
-  transform-style: preserve-3d;
-}
-
-.ribbon-card-wrapper {
-  flex-shrink: 0;
-  height: 380px;
-  transition: transform 0.12s ease-out;
-  transform-style: preserve-3d;
-  will-change: transform;
-}
-
-.ribbon-card-inner {
-  width: 100%;
-  height: 100%;
-  border-radius: 26px;
-  overflow: hidden;
+.ribbon-convex-track {
   position: relative;
+  width: var(--gallery-card-w);
+  height: var(--gallery-card-h);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.ribbon-convex-card {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   background: #111111;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.16);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  transition: filter 0.15s ease, opacity 0.15s ease;
+  will-change: transform, filter, opacity;
 }
 
-.ribbon-card-wrapper:hover .ribbon-card-inner {
-  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.28);
-  border-color: rgba(255, 255, 255, 0.3);
-}
-
-.ribbon-card-img {
+.ribbon-convex-card img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
   pointer-events: none;
-  transition: transform 0.4s ease;
-}
-
-.ribbon-card-wrapper:hover .ribbon-card-img {
-  transform: scale(1.05);
+  display: block;
 }
 
 .ribbon-card-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.15) 50%, transparent 100%);
   display: flex;
-  align-items: flex-end;
-  padding: 1.5rem;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.25rem;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.25s ease;
 }
 
-.ribbon-card-wrapper:hover .ribbon-card-overlay {
+.ribbon-convex-card:hover .ribbon-card-overlay {
   opacity: 1;
 }
 
 .ribbon-card-title {
   color: #ffffff;
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: -0.01em;
+  margin-bottom: 2px;
+}
+
+.ribbon-card-tag {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .ribbon-arrow-btn {
@@ -2132,14 +2161,14 @@ footer.site-footer {
   height: 48px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
   border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 20;
+  z-index: 120;
   color: #0a0a0a;
   transition: all 0.25s ease;
 }
@@ -2151,11 +2180,17 @@ footer.site-footer {
 }
 
 .ribbon-arrow-left {
-  left: 2rem;
+  left: 32px;
 }
 
 .ribbon-arrow-right {
-  right: 2rem;
+  right: 32px;
+}
+
+@media (max-width: 768px) {
+  .ribbon-arrow-btn {
+    display: none;
+  }
 }
 
 /* Testimonial slider polish */
@@ -2200,74 +2235,6 @@ footer.site-footer {
   background: #000000;
 }
 
-@media (max-width: 768px) {
-  .ribbon-card-wrapper {
-    height: 310px;
-    width: 230px !important;
-  }
-  .ribbon-arrow-btn {
-    display: none;
-  }
-}
-
-/* ==========================================================================
-   CONCAVE 3D CAROUSEL (NEGATIVE Z DEPTH & LAYERED Z-INDEX)
-   ========================================================================== */
-.ribbon-cylinder-stage {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-  padding: 3rem 0 4rem;
-  min-height: 540px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.ribbon-cylinder-viewport {
-  width: 100%;
-  overflow: visible;
-  perspective: 1300px;
-  perspective-origin: 50% 50%;
-  display: flex;
-  justify-content: center;
-}
-
-.ribbon-3d-track {
-  display: flex;
-  gap: 16px;
-  width: max-content;
-  will-change: transform;
-  transform-style: preserve-3d;
-  align-items: center;
-}
-
-.ribbon-card-wrapper {
-  flex-shrink: 0;
-  height: 440px;
-  transition: transform 0.12s ease-out;
-  transform-style: preserve-3d;
-  will-change: transform;
-  position: relative;
-}
-
-.ribbon-card-inner {
-  width: 100%;
-  height: 100%;
-  border-radius: 24px;
-  overflow: hidden;
-  position: relative;
-  background: #111111;
-  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.22);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  transition: box-shadow 0.3s ease, border-color 0.3s ease;
-}
-
-.ribbon-card-wrapper:hover .ribbon-card-inner {
-  box-shadow: 0 28px 56px rgba(0, 0, 0, 0.35);
-  border-color: rgba(255, 255, 255, 0.35);
-}
-
 /* Ensure navbar stays permanently above all 3D transforms */
 .nav-wrapper {
   z-index: 99999 !important;
@@ -2277,28 +2244,7 @@ footer.site-footer {
   z-index: 9999 !important;
 }
 
-/* ==========================================================================
-   INCREASED CAMERA PERSPECTIVE & DEEP NEGATIVE Z FOR CAROUSEL
-   ========================================================================== */
-.ribbon-cylinder-stage {
-  min-height: 620px !important;
-  padding: 4rem 0 5rem !important;
-}
 
-.ribbon-cylinder-viewport {
-  perspective: 750px !important;
-  perspective-origin: 50% 50% !important;
-}
-
-.ribbon-card-wrapper {
-  height: 480px !important;
-  transition: transform 0.08s ease-out !important;
-}
-
-.ribbon-card-inner {
-  border-radius: 28px !important;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.32) !important;
-}
 
 /* ==========================================================================
    HERO FEATURE CARD REFINEMENT (IMAGE AS BACKGROUND, TEXT & BUTTON OVERLAY)
