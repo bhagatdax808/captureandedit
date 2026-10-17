@@ -27,6 +27,10 @@
   --radius-sm: 8px;
 
   --transition-smooth: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+
+  --gallery-persp: 1000px;
+  --gallery-persp-x: 50%;
+  --gallery-persp-y: 50%;
 }
 
 *, *::before, *::after {
@@ -2012,42 +2016,39 @@ footer.site-footer {
    Reference: Negative-Z Convex Arc with Dynamic Shading & Z-Index
    ========================================================================== */
 :root {
-  --gallery-persp: 320px;
+  --gallery-persp: 1050px;
   --gallery-persp-x: 50%;
   --gallery-persp-y: 50%;
-  --gallery-track-z: -220px;
-  --gallery-radius-z: -630px;
-  --gallery-card-w: 210px;
-  --gallery-card-h: 295px;
-  --gallery-angle-step: 22.5deg;
+  --gallery-card-w: 260px;
+  --gallery-card-h: 360px;
 }
 
 @media (max-width: 900px) {
   :root {
-    --gallery-persp: 300px;
-    --gallery-track-z: -190px;
-    --gallery-radius-z: -520px;
-    --gallery-card-w: 180px;
-    --gallery-card-h: 255px;
+    --gallery-persp: 900px;
+    --gallery-card-w: 220px;
+    --gallery-card-h: 305px;
   }
 }
 
 @media (max-width: 600px) {
   :root {
-    --gallery-persp: 270px;
-    --gallery-track-z: -160px;
-    --gallery-radius-z: -420px;
-    --gallery-card-w: 150px;
-    --gallery-card-h: 215px;
+    --gallery-persp: 750px;
+    --gallery-card-w: 175px;
+    --gallery-card-h: 245px;
   }
 }
 
 .ribbon-showcase-section {
-  width: 100%;
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
   padding: 5rem 0 6rem;
   overflow: hidden;
   background: #ffffff;
-  position: relative;
   user-select: none;
 }
 
@@ -2073,9 +2074,8 @@ footer.site-footer {
 }
 
 .ribbon-convex-viewport {
-  width: 100vw;
-  max-width: 100%;
-  height: 480px;
+  width: 100%;
+  height: 520px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2083,8 +2083,8 @@ footer.site-footer {
   perspective-origin: var(--gallery-persp-x) var(--gallery-persp-y);
   cursor: grab;
   overflow: hidden;
-  position: relative;
   touch-action: pan-y;
+  position: relative;
 }
 
 .ribbon-convex-viewport:active,
@@ -2094,22 +2094,23 @@ footer.site-footer {
 
 .ribbon-convex-track {
   position: relative;
-  width: var(--gallery-card-w);
-  height: var(--gallery-card-h);
+  width: 100%;
+  height: 100%;
   transform-style: preserve-3d;
-  will-change: transform;
+  pointer-events: none;
 }
 
 .ribbon-convex-card {
   position: absolute;
-  inset: 0;
-  border-radius: 20px;
+  top: 50%;
+  left: 50%;
+  border-radius: 22px;
   overflow: hidden;
   transform-style: preserve-3d;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 25px 55px rgba(0, 0, 0, 0.45);
   border: 1px solid rgba(255, 255, 255, 0.15);
   background: #111111;
-  transition: filter 0.15s ease, opacity 0.15s ease;
+  transform-origin: center center;
   will-change: transform, filter, opacity;
 }
 

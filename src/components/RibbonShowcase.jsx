@@ -22,7 +22,6 @@ const carouselPhotos = [
 
 export default function RibbonShowcase() {
   const viewportRef = useRef(null);
-  const trackRef = useRef(null);
   const cardRefs = useRef([]);
 
   const [isDragging, setIsDragging] = useState(false);
@@ -35,60 +34,57 @@ export default function RibbonShowcase() {
 
   const total = carouselPhotos.length;
   const angleStep = 360 / total;
-  const centerIdx = Math.floor(total / 2);
-  const autoPlaySpeed = 0.14;
-  const archY = 0;
-
-  const getSettings = useCallback(() => {
-    const w = typeof window !== 'undefined' ? window.innerWidth : 1200;
-    if (w < 600) {
-      return { radiusZ: -420, trackZ: -160 };
-    } else if (w < 900) {
-      return { radiusZ: -520, trackZ: -190 };
-    } else {
-      return { radiusZ: -630, trackZ: -220 };
-    }
-  }, []);
+  const autoPlaySpeed = 0.12;
 
   const update = useCallback((currentRot) => {
-    if (!trackRef.current) return;
-    const { radiusZ, trackZ } = getSettings();
-
-    // Apply negative track translation and rotation
-    trackRef.current.style.transform = `translateZ(${trackZ}px) rotateY(${currentRot}deg)`;
+    const w = typeof window !== 'undefined' ? window.innerWidth : 1440;
+    // Spread cards so they reach both outer screen borders (touching 100vw full screen)
+    const spreadX = w * 0.52;
+    const cardW = Math.max(195, Math.min(260, Math.round(w * 0.16)));
+    const cardH = Math.round(cardW * 1.38);
 
     cardRefs.current.forEach((card, i) => {
       if (!card) return;
-      const offset = i - centerIdx;
-      const angle = offset * angleStep;
-      const yOffset = Math.pow(offset, 2) * (archY / 9);
-
-      // Negative Z curvature pushes side elements back (or amphitheater arc)
-      card.style.transform = `rotateY(${angle}deg) translateZ(${radiusZ}px) translateY(${yOffset}px)`;
-
-      // Strict Dynamic math Z-Index
+      const angle = i * angleStep;
+      // Normalized angle relative to viewport center [-180, 180]
       const normAngle = (((angle + currentRot) % 360) + 540) % 360 - 180;
       const absAngle = Math.abs(normAngle);
-      const zIndex = Math.round(100 - (absAngle / 180) * 85);
-      card.style.zIndex = zIndex;
 
-      // Depth atmospheric shading
-      const depthRatio = Math.min(absAngle / 90, 1);
-      card.style.filter = `brightness(${1 - depthRatio * 0.4}) blur(${depthRatio * 1.5}px)`;
+      card.style.width = `${cardW}px`;
+      card.style.height = `${cardH}px`;
 
-      // Half-circular visibility: cards in front arc (absAngle <= 98) are visible with soft edge fade
-      if (absAngle <= 98) {
+      // Full screen arc visibility: cards on visible front arc touch full screen edges
+      if (absAngle <= 96) {
         card.style.visibility = 'visible';
-        const edgeFade = Math.max(0, Math.min(1, (98 - absAngle) / 20));
+
+        // 3D positioning: convex curve with positive center Z and full screen touch
+        const rad = (normAngle * Math.PI) / 180;
+        const x = Math.sin(rad) * spreadX;
+        // Positive center Z at +35px curving backward smoothly to -135px at screen borders
+        const z = Math.cos(rad) * 170 - 135;
+        const rotY = normAngle * 0.38;
+        const scale = 1.05 - (absAngle / 96) * 0.16;
+
+        card.style.transform = `translate3d(calc(-50% + ${x}px), -50%, ${z}px) rotateY(${rotY}deg) scale(${scale})`;
+
+        // Strict Z-Index: front card is always on top
+        const zIndex = Math.round(100 - absAngle);
+        card.style.zIndex = zIndex;
+
+        // Depth atmospheric lighting & edge fade
+        const depthRatio = Math.min(absAngle / 78, 1);
+        card.style.filter = `brightness(${1 - depthRatio * 0.28}) blur(${depthRatio * 0.65}px)`;
+
+        const edgeFade = Math.max(0, Math.min(1, (96 - absAngle) / 18));
         card.style.opacity = String(edgeFade);
-        card.style.pointerEvents = absAngle < 35 ? 'auto' : 'none';
+        card.style.pointerEvents = absAngle < 36 ? 'auto' : 'none';
       } else {
         card.style.visibility = 'hidden';
         card.style.opacity = '0';
         card.style.pointerEvents = 'none';
       }
     });
-  }, [angleStep, centerIdx, archY, getSettings]);
+  }, [angleStep]);
 
   useEffect(() => {
     let animId;
@@ -137,7 +133,7 @@ export default function RibbonShowcase() {
     const dt = now - dragStartRef.current.lastTime;
 
     if (dt > 10) {
-      velocityRef.current = (clientX - dragStartRef.current.lastX) * 0.14 / (dt / 16.666);
+      velocityRef.current = ((clientX - dragStartRef.current.lastX) * 0.14) / (dt / 16.666);
       dragStartRef.current.lastX = clientX;
       dragStartRef.current.lastTime = now;
     }
@@ -152,14 +148,14 @@ export default function RibbonShowcase() {
   };
 
   const rotateByStep = (direction) => {
-    velocityRef.current = direction * 2.6;
+    velocityRef.current = direction * 2.8;
   };
 
   return (
     <section className="ribbon-showcase-section" id="gallery-3d">
       <div className="ribbon-outer-header">
-        <h3 className="ribbon-subheading">Visual Journey &mdash; 3D Convex Gallery</h3>
-        <p className="ribbon-drag-hint">Negative-Z Convex Arc &bull; Drag to rotate or use navigation arrows</p>
+        <h3 className="ribbon-subheading">Visual Journey &mdash; 3D Showcase</h3>
+        <p className="ribbon-drag-hint">Full-Screen 3D Panorama &bull; Drag to rotate or use navigation arrows</p>
       </div>
 
       <div
@@ -206,8 +202,8 @@ export default function RibbonShowcase() {
           <ChevronRight size={22} />
         </button>
 
-        {/* Negative-Z Convex Track */}
-        <div className="ribbon-convex-track" ref={trackRef}>
+        {/* 3D Convex Track */}
+        <div className="ribbon-convex-track">
           {carouselPhotos.map((item, idx) => (
             <div
               key={item.id}
