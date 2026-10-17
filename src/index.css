@@ -1,4 +1,4 @@
-﻿/* -------------------------------------------------------------
+/* -------------------------------------------------------------
    CAPTURE® — Professional Photography Portfolio (Vite + React)
    Font: "Manrope", "Manrope Placeholder", sans-serif
    Accent: "Playfair Display", italic serif
@@ -335,8 +335,7 @@ button {
 }
 
 .hero-feature-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.65);
+  transform: none;
 }
 
 .card-title-text {
@@ -363,7 +362,7 @@ button {
 }
 
 .hero-feature-card:hover .card-image-box img {
-  transform: scale(1.06);
+  transform: none;
 }
 
 .card-footer-row {
@@ -2249,12 +2248,12 @@ footer.site-footer {
   background: #1f302b !important;
   box-shadow: 0 20px 48px rgba(0, 0, 0, 0.45) !important;
   border: 1px solid rgba(255, 255, 255, 0.18) !important;
-  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+  margin-bottom: 2.5rem !important;
 }
 
 .hero-feature-card:hover {
-  transform: translateY(-4px) !important;
-  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.6) !important;
+  transform: none !important;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.45) !important;
 }
 
 .hero-feature-card .card-bg-media {
@@ -2264,11 +2263,12 @@ footer.site-footer {
   height: 100% !important;
   object-fit: cover !important;
   z-index: 1 !important;
-  transition: transform 0.5s ease !important;
+  transition: none !important;
+  transform: none !important;
 }
 
 .hero-feature-card:hover .card-bg-media {
-  transform: scale(1.06) !important;
+  transform: none !important;
 }
 
 .hero-feature-card .card-bg-overlay {
