@@ -14,7 +14,10 @@ const milestoneLine2Words = [
 ];
 
 export default function Milestone({ onOpenChat }) {
-  const headingRef = useRef(null);
+  const sectionRef = useRef(null);
+  const headingBoxRef = useRef(null);
+  const gridRef = useRef(null);
+
   const brandLogos = [
     { id: 'zenzap-1', name: 'ZenZap', type: 'zenzap' },
     { id: 'spark-1', name: 'spark', type: 'spark' },
@@ -27,32 +30,72 @@ export default function Milestone({ onOpenChat }) {
   const repeatedLogos = [...brandLogos, ...brandLogos, ...brandLogos];
 
   useEffect(() => {
-    const headingEl = headingRef.current;
-    if (!headingEl) return;
-
     const ctx = gsap.context(() => {
-      const words = headingEl.querySelectorAll('.milestone-word');
-      if (words.length) {
+      // 1. Initial word entrance stagger
+      const words = headingBoxRef.current?.querySelectorAll('.milestone-word');
+      if (words && words.length) {
         gsap.fromTo(
           words,
           {
             opacity: 0,
-            y: 32,
-            filter: 'blur(8px)',
+            y: 28,
+            filter: 'blur(6px)',
           },
           {
             opacity: 1,
             y: 0,
             filter: 'blur(0px)',
-            duration: 0.9,
+            duration: 0.85,
             ease: 'power3.out',
-            stagger: 0.045,
+            stagger: 0.04,
             scrollTrigger: {
-              trigger: headingEl,
-              start: 'top 82%',
+              trigger: headingBoxRef.current,
+              start: 'top 85%',
               toggleActions: 'play none none reverse',
             },
           }
+        );
+      }
+
+      // 2. Smooth 2-way scrubbed 3D parallax
+      // Text recedes back into depth while photos glide from bottom to top, reversing on scroll up
+      if (sectionRef.current && headingBoxRef.current && gridRef.current) {
+        const scrubTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+            end: 'bottom 15%',
+            scrub: 1.2,
+          },
+        });
+
+        scrubTl.fromTo(
+          headingBoxRef.current,
+          {
+            scale: 1,
+            y: 0,
+            opacity: 1,
+            transformOrigin: '50% 40%',
+          },
+          {
+            scale: 0.87,
+            y: 45,
+            opacity: 0.75,
+            ease: 'none',
+          },
+          0
+        );
+
+        scrubTl.fromTo(
+          gridRef.current,
+          {
+            y: 95,
+          },
+          {
+            y: -35,
+            ease: 'none',
+          },
+          0
         );
       }
     });
@@ -61,7 +104,7 @@ export default function Milestone({ onOpenChat }) {
   }, []);
 
   return (
-    <section className="section-milestone" id="milestone">
+    <section className="section-milestone" id="milestone" ref={sectionRef}>
       <div className="milestone-container">
         {/* Infinite Partner Logo Marquee with Original Logos */}
         <div className="marquee-wrapper" aria-hidden="true">
@@ -102,9 +145,9 @@ export default function Milestone({ onOpenChat }) {
           </div>
         </div>
 
-        {/* Milestone Main Heading with GSAP Stagger */}
-        <div className="milestone-heading-container">
-          <h2 className="milestone-heading" ref={headingRef}>
+        {/* Milestone Main Heading with GSAP Stagger and 3D Depth */}
+        <div className="milestone-heading-container" ref={headingBoxRef}>
+          <h2 className="milestone-heading">
             <span className="milestone-line-block" style={{ display: 'block' }}>
               {milestoneLine1Words.map((word, idx) => (
                 <React.Fragment key={idx}>
@@ -141,8 +184,8 @@ export default function Milestone({ onOpenChat }) {
           </div>
         </div>
 
-        {/* Dual Showcase Photo Cards - ONLY photos shown, no text content */}
-        <div className="milestone-grid">
+        {/* Dual Showcase Photo Cards - gliding bottom-to-top with scrubbed parallax */}
+        <div className="milestone-grid" ref={gridRef}>
           <div className="milestone-photo-card">
             <img
               src="/photos/ZbIHQ4En9g1fFVY4ihQ8XwHYdu4.webp"

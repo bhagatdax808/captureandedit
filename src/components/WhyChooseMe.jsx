@@ -2,17 +2,28 @@ import React from 'react';
 import { clientAvatars } from '../data/portfolioData';
 
 export default function WhyChooseMe() {
-  const collagePhotos = [
+  const streamRow1 = [
     'photos/5QD4gq8SXUlDrEqPWmWKw4gsB0Y.webp',
     'photos/hMH3wtZnELIRTERjHWcZy4tHu0.webp',
     'photos/fqbzCqmxwVrEstVQLw80EJWI.webp',
     'photos/y6nsXyFCXVHybL6AG2drPt8Xug.webp',
     'photos/OPlEwXTCExFA6XWSSCcAd08s8o.webp',
+  ];
+
+  const streamRow2 = [
     'photos/PtOmfIDqFPfLwMMucdVIw0jwKwk.webp',
     'photos/Y2OvZnk4qxbxW0miBtWc6m8g.webp',
     'photos/33MV0IZmK3REFJalk6IMW9hZ8.webp',
     'photos/ZSyMpL8lvnOJDsnLpJIpYhAEoY.webp',
-    'photos/vBbp3UFXMUZNQ4RfI3RjS3iDmPE.webp'
+    'photos/vBbp3UFXMUZNQ4RfI3RjS3iDmPE.webp',
+  ];
+
+  const streamRow3 = [
+    'photos/0wAQnSK8HJ1PqWcUHPNg7r4fQ.webp',
+    'photos/GBnQnQd8wzM0iTfsxo2Ry3g6CQ.webp',
+    'photos/WNLmA9eUN1dEBUPu6SMcwSAn05A.webp',
+    'photos/PZYfFvZVyilvFHwmkx9JUpJbUI.webp',
+    'photos/ZbIHQ4En9g1fFVY4ihQ8XwHYdu4.webp',
   ];
 
   return (
@@ -61,14 +72,39 @@ export default function WhyChooseMe() {
               </div>
             </div>
 
-            {/* Card 2: 10-Photo Grid */}
-            <div className="bento-card bento-grid-card">
-              <div className="photo-collage-grid">
-                {collagePhotos.map((src, idx) => (
-                  <div key={idx} className="collage-item">
-                    <img src={src} alt={"Collage piece " + (idx + 1)} loading="lazy" />
-                  </div>
-                ))}
+            {/* Card 2: 3-Stream Photography Infinite Marquee (Right, Left, Right) */}
+            <div className="bento-card bento-streams-card" aria-hidden="true">
+              {/* Row 1: Infinite to Right */}
+              <div className="bento-stream-row">
+                <div className="bento-stream-track stream-track-right">
+                  {[...streamRow1, ...streamRow1].map((src, idx) => (
+                    <div key={'r1-' + idx} className="bento-stream-thumb">
+                      <img src={src} alt="" loading="lazy" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Row 2: Infinite to Left */}
+              <div className="bento-stream-row">
+                <div className="bento-stream-track stream-track-left">
+                  {[...streamRow2, ...streamRow2].map((src, idx) => (
+                    <div key={'r2-' + idx} className="bento-stream-thumb">
+                      <img src={src} alt="" loading="lazy" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Row 3: Infinite to Right */}
+              <div className="bento-stream-row">
+                <div className="bento-stream-track stream-track-right stream-track-right-alt">
+                  {[...streamRow3, ...streamRow3].map((src, idx) => (
+                    <div key={'r3-' + idx} className="bento-stream-thumb">
+                      <img src={src} alt="" loading="lazy" />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
