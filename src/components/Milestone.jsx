@@ -15,6 +15,7 @@ const milestoneLine2Words = [
 
 export default function Milestone({ onOpenChat }) {
   const sectionRef = useRef(null);
+  const stageRef = useRef(null);
   const headingBoxRef = useRef(null);
   const gridRef = useRef(null);
 
@@ -49,7 +50,7 @@ export default function Milestone({ onOpenChat }) {
             ease: 'power3.out',
             stagger: 0.04,
             scrollTrigger: {
-              trigger: headingBoxRef.current,
+              trigger: stageRef.current,
               start: 'top 85%',
               toggleActions: 'play none none reverse',
             },
@@ -57,43 +58,58 @@ export default function Milestone({ onOpenChat }) {
         );
       }
 
-      // 2. Smooth 2-way scrubbed 3D parallax
-      // Text recedes back into depth while photos glide from bottom to top, reversing on scroll up
-      if (sectionRef.current && headingBoxRef.current && gridRef.current) {
-        const scrubTl = gsap.timeline({
+      // 2. Vertical pinned scroll timeline:
+      // When scrolling down, the heading text recedes deep to the back back
+      // and the dual images glide up to the front center. Smoothly reverses on scroll up!
+      if (stageRef.current && headingBoxRef.current && gridRef.current) {
+        const pinTl = gsap.timeline({
           scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 80%',
-            end: 'bottom 15%',
+            trigger: stageRef.current,
+            start: 'top 12%',
+            end: '+=140%',
+            pin: true,
+            pinSpacing: true,
+            anticipatePin: 1,
             scrub: 1.2,
+            invalidateOnRefresh: true,
           },
         });
 
-        scrubTl.fromTo(
+        // Heading recedes deep to the back:
+        pinTl.fromTo(
           headingBoxRef.current,
           {
             scale: 1,
+            z: 0,
             y: 0,
             opacity: 1,
-            transformOrigin: '50% 40%',
+            filter: 'blur(0px)',
+            transformOrigin: '50% 50%',
           },
           {
-            scale: 0.87,
-            y: 45,
-            opacity: 0.75,
-            ease: 'none',
+            scale: 0.52,
+            z: -450,
+            y: -50,
+            opacity: 0.2,
+            filter: 'blur(3px)',
+            ease: 'power1.inOut',
           },
           0
         );
 
-        scrubTl.fromTo(
+        // Images glide up from bottom (up side):
+        pinTl.fromTo(
           gridRef.current,
           {
-            y: 95,
+            yPercent: 120,
+            scale: 0.84,
+            opacity: 0,
           },
           {
-            y: -35,
-            ease: 'none',
+            yPercent: -45,
+            scale: 1,
+            opacity: 1,
+            ease: 'power1.out',
           },
           0
         );
@@ -145,63 +161,66 @@ export default function Milestone({ onOpenChat }) {
           </div>
         </div>
 
-        {/* Milestone Main Heading with GSAP Stagger and 3D Depth */}
-        <div className="milestone-heading-container" ref={headingBoxRef}>
-          <h2 className="milestone-heading">
-            <span className="milestone-line-block" style={{ display: 'block' }}>
-              {milestoneLine1Words.map((word, idx) => (
-                <React.Fragment key={idx}>
-                  <span
-                    className="milestone-word"
-                    style={{ display: 'inline-block', willChange: 'transform, opacity, filter' }}
-                  >
-                    {word}
-                  </span>{' '}
-                </React.Fragment>
-              ))}
-            </span>
-            <span className="milestone-line-block" style={{ display: 'block' }}>
-              {milestoneLine2Words.map((item, idx) => (
-                <React.Fragment key={idx}>
-                  <span
-                    className={`milestone-word ${item.italic ? 'serif-italic' : ''}`}
-                    style={{ display: 'inline-block', willChange: 'transform, opacity, filter' }}
-                  >
-                    {item.text}
-                  </span>{' '}
-                </React.Fragment>
-              ))}
-            </span>
-          </h2>
-          <div className="milestone-cta-row">
-            <button
-              type="button"
-              className="milestone-chat-pill-btn"
-              onClick={onOpenChat}
-            >
-              Let's chat
-            </button>
-          </div>
-        </div>
-
-        {/* Dual Showcase Photo Cards - gliding bottom-to-top with scrubbed parallax */}
-        <div className="milestone-grid" ref={gridRef}>
-          <div className="milestone-photo-card">
-            <img
-              src="/photos/ZbIHQ4En9g1fFVY4ihQ8XwHYdu4.webp"
-              alt="Editorial shoot on snowy mountain trail"
-              className="milestone-card-img"
-              loading="lazy"
-            />
+        {/* Pinned 3D Vertical Scroll Stage */}
+        <div className="milestone-scroll-stage" ref={stageRef}>
+          {/* Milestone Main Heading with GSAP Stagger and 3D Depth */}
+          <div className="milestone-heading-container" ref={headingBoxRef}>
+            <h2 className="milestone-heading">
+              <span className="milestone-line-block" style={{ display: 'block' }}>
+                {milestoneLine1Words.map((word, idx) => (
+                  <React.Fragment key={idx}>
+                    <span
+                      className="milestone-word"
+                      style={{ display: 'inline-block', willChange: 'transform, opacity, filter' }}
+                    >
+                      {word}
+                    </span>{' '}
+                  </React.Fragment>
+                ))}
+              </span>
+              <span className="milestone-line-block" style={{ display: 'block' }}>
+                {milestoneLine2Words.map((item, idx) => (
+                  <React.Fragment key={idx}>
+                    <span
+                      className={`milestone-word ${item.italic ? 'serif-italic' : ''}`}
+                      style={{ display: 'inline-block', willChange: 'transform, opacity, filter' }}
+                    >
+                      {item.text}
+                    </span>{' '}
+                  </React.Fragment>
+                ))}
+              </span>
+            </h2>
+            <div className="milestone-cta-row">
+              <button
+                type="button"
+                className="milestone-chat-pill-btn"
+                onClick={onOpenChat}
+              >
+                Let's chat
+              </button>
+            </div>
           </div>
 
-          <div className="milestone-photo-card">
-            <img
-              src="/photos/5WjX1vJg991GRNOY7QwweeYhYUA.webp"
-              alt="Golden hour portrait in classic car"
-              className="milestone-card-img"
-              loading="lazy"
-            />
+          {/* Dual Showcase Photo Cards - gliding up to foreground */}
+          <div className="milestone-grid" ref={gridRef}>
+            <div className="milestone-photo-card">
+              <img
+                src="/photos/ZbIHQ4En9g1fFVY4ihQ8XwHYdu4.webp"
+                alt="Editorial shoot on snowy mountain trail"
+                className="milestone-card-img"
+                loading="lazy"
+              />
+            </div>
+
+            <div className="milestone-photo-card">
+              <img
+                src="/photos/5WjX1vJg991GRNOY7QwweeYhYUA.webp"
+                alt="Golden hour portrait in classic car"
+                className="milestone-card-img"
+                loading="lazy"
+              />
+            </div>
           </div>
         </div>
       </div>

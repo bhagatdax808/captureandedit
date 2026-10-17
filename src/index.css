@@ -2714,31 +2714,79 @@ footer.site-footer {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1) !important;
 }
 .milestone-container {
+  max-width: 1320px !important;
+  margin: 0 auto !important;
+  width: 100% !important;
+}
+
+.milestone-scroll-stage {
+  position: relative !important;
+  width: 100% !important;
+  min-height: 82vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
   perspective: 1200px !important;
-  perspective-origin: center 40% !important;
+  perspective-origin: 50% 45% !important;
+  overflow: visible !important;
+  padding: 1.5rem 0 !important;
 }
+
 .milestone-heading-container {
-  will-change: transform, opacity !important;
+  position: relative !important;
+  z-index: 1 !important;
+  max-width: 980px !important;
+  margin: 0 auto !important;
+  will-change: transform, opacity, filter !important;
   transform-style: preserve-3d !important;
+  transform-origin: 50% 45% !important;
 }
+
 .milestone-grid {
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  top: 50% !important;
+  margin: 0 auto !important;
+  max-width: 1180px !important;
+  width: 100% !important;
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;
   gap: 32px !important;
-  will-change: transform !important;
+  z-index: 2 !important;
+  will-change: transform, opacity !important;
+  pointer-events: auto !important;
 }
+
 .milestone-photo-card {
-  border-radius: 24px !important;
+  border-radius: 26px !important;
   overflow: hidden !important;
   aspect-ratio: 16 / 11 !important;
   background: #111 !important;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.16) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
 }
+
 .milestone-card-img {
   width: 100% !important;
   height: 100% !important;
   object-fit: cover !important;
   display: block !important;
+  transition: transform 0.6s ease !important;
+}
+
+.milestone-photo-card:hover .milestone-card-img {
+  transform: scale(1.04) !important;
+}
+
+@media (max-width: 768px) {
+  .milestone-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    max-width: 480px !important;
+    padding: 0 1rem !important;
+  }
 }
 .section-portfolio {
   background-color: #ffffff !important;
