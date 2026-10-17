@@ -36,7 +36,7 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto !important;
   font-family: var(--font-main);
   background-color: #ffffff;
   color: var(--color-text-main);
