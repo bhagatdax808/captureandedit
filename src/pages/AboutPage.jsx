@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Camera, Film, Sun, Award, Play, Pause, Maximize2, ArrowUpRight } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const quoteWords = [
   { text: "“I", italic: false },
@@ -33,67 +37,34 @@ export default function AboutPage({ onOpenChat }) {
     const quoteEl = quoteRef.current;
     if (!quoteEl) return;
 
-    const words = quoteEl.querySelectorAll('.reveal-word');
-    if (!words.length) return;
-
-    let ticking = false;
-
-    const updateReveal = () => {
-      const rect = quoteEl.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-
-      const startTrigger = windowHeight * 0.85;
-      const endTrigger = windowHeight * 0.35;
-      const progress = Math.min(1, Math.max(0, (startTrigger - rect.top) / (startTrigger - endTrigger)));
-
-      const total = words.length;
-      words.forEach((word, index) => {
-        const wordStart = index / total;
-        const wordEnd = (index + 1) / total;
-
-        let wordProgress = 0;
-        if (progress >= wordEnd) {
-          wordProgress = 1;
-        } else if (progress <= wordStart) {
-          wordProgress = 0;
-        } else {
-          wordProgress = (progress - wordStart) / (wordEnd - wordStart);
-        }
-
-        const currentOpacity = 0.18 + wordProgress * 0.82;
-        const currentY = (1 - wordProgress) * 5;
-        const currentBlur = (1 - wordProgress) * 1.5;
-
-        word.style.opacity = currentOpacity.toFixed(3);
-        word.style.transform = `translate3d(0, ${currentY.toFixed(1)}px, 0)`;
-        word.style.filter = currentBlur > 0.05 ? `blur(${currentBlur.toFixed(1)}px)` : 'none';
-      });
-
-      ticking = false;
-    };
-
-    const onScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(updateReveal);
-        ticking = true;
+    const ctx = gsap.context(() => {
+      const words = quoteEl.querySelectorAll('.reveal-word');
+      if (words.length) {
+        gsap.fromTo(
+          words,
+          {
+            opacity: 0,
+            y: 28,
+            filter: 'blur(8px)',
+          },
+          {
+            opacity: 1,
+            y: 0,
+            filter: 'blur(0px)',
+            duration: 0.85,
+            ease: 'power3.out',
+            stagger: 0.038,
+            scrollTrigger: {
+              trigger: quoteEl,
+              start: 'top 82%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
       }
-    };
+    });
 
-    updateReveal();
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll, { passive: true });
-    if (window.__lenis) {
-      window.__lenis.on('scroll', onScroll);
-    }
-
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-      if (window.__lenis) {
-        window.__lenis.off('scroll', onScroll);
-      }
-    };
+    return () => ctx.revert();
   }, []);
 
   const gearData = {
@@ -160,14 +131,16 @@ export default function AboutPage({ onOpenChat }) {
               </div>
             </div>
             <div className="about-quote-col">
-              <h2 className="about-quote scroll-reveal-quote" ref={quoteRef}>
+              <h2 className="about-quote" ref={quoteRef}>
                 {quoteWords.map((item, idx) => (
-                  <span
-                    key={idx}
-                    className={`reveal-word ${item.italic ? 'serif-italic' : ''}`}
-                  >
-                    {item.text}
-                  </span>
+                  <React.Fragment key={idx}>
+                    <span
+                      className={`reveal-word ${item.italic ? 'serif-italic' : ''}`}
+                      style={{ display: 'inline-block', willChange: 'transform, opacity, filter' }}
+                    >
+                      {item.text}
+                    </span>{' '}
+                  </React.Fragment>
                 ))}
               </h2>
             </div>

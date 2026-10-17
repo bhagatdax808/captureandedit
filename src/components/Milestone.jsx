@@ -1,6 +1,20 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
+
+const milestoneLine1Words = ["More", "than", "1,000", "projects", "complete"];
+const milestoneLine2Words = [
+  { text: "–", italic: false },
+  { text: "clients", italic: true },
+  { text: "keep", italic: true },
+  { text: "coming", italic: true },
+  { text: "back", italic: true }
+];
 
 export default function Milestone({ onOpenChat }) {
+  const headingRef = useRef(null);
   const brandLogos = [
     { id: 'zenzap-1', name: 'ZenZap', type: 'zenzap' },
     { id: 'spark-1', name: 'spark', type: 'spark' },
@@ -11,6 +25,40 @@ export default function Milestone({ onOpenChat }) {
   ];
 
   const repeatedLogos = [...brandLogos, ...brandLogos, ...brandLogos];
+
+  useEffect(() => {
+    const headingEl = headingRef.current;
+    if (!headingEl) return;
+
+    const ctx = gsap.context(() => {
+      const words = headingEl.querySelectorAll('.milestone-word');
+      if (words.length) {
+        gsap.fromTo(
+          words,
+          {
+            opacity: 0,
+            y: 32,
+            filter: 'blur(8px)',
+          },
+          {
+            opacity: 1,
+            y: 0,
+            filter: 'blur(0px)',
+            duration: 0.9,
+            ease: 'power3.out',
+            stagger: 0.045,
+            scrollTrigger: {
+              trigger: headingEl,
+              start: 'top 82%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      }
+    });
+
+    return () => ctx.revert();
+  }, []);
 
   return (
     <section className="section-milestone" id="milestone">
@@ -54,11 +102,33 @@ export default function Milestone({ onOpenChat }) {
           </div>
         </div>
 
-        {/* Milestone Main Heading */}
+        {/* Milestone Main Heading with GSAP Stagger */}
         <div className="milestone-heading-container">
-          <h2 className="milestone-heading">
-            More than 1,000 projects complete<br />
-            &ndash; <span className="serif-italic">clients keep coming back</span>
+          <h2 className="milestone-heading" ref={headingRef}>
+            <span className="milestone-line-block" style={{ display: 'block' }}>
+              {milestoneLine1Words.map((word, idx) => (
+                <React.Fragment key={idx}>
+                  <span
+                    className="milestone-word"
+                    style={{ display: 'inline-block', willChange: 'transform, opacity, filter' }}
+                  >
+                    {word}
+                  </span>{' '}
+                </React.Fragment>
+              ))}
+            </span>
+            <span className="milestone-line-block" style={{ display: 'block' }}>
+              {milestoneLine2Words.map((item, idx) => (
+                <React.Fragment key={idx}>
+                  <span
+                    className={`milestone-word ${item.italic ? 'serif-italic' : ''}`}
+                    style={{ display: 'inline-block', willChange: 'transform, opacity, filter' }}
+                  >
+                    {item.text}
+                  </span>{' '}
+                </React.Fragment>
+              ))}
+            </span>
           </h2>
           <div className="milestone-cta-row">
             <button

@@ -2467,17 +2467,11 @@ footer.site-footer {
   color: #111111 !important;
   margin: 0 !important;
 }
-.scroll-reveal-quote {
-  line-height: 1.25 !important;
-}
-.reveal-word {
+.reveal-word,
+.desc-word,
+.milestone-word {
   display: inline-block;
-  opacity: 0.18;
-  filter: blur(1.5px);
-  transform: translate3d(0, 5px, 0);
-  transition: opacity 0.12s ease-out, transform 0.12s ease-out, filter 0.12s ease-out;
-  will-change: opacity, transform, filter;
-  margin-right: 0.28em;
+  will-change: transform, opacity, filter;
 }
 .about-quote .serif-italic,
 .serif-italic {

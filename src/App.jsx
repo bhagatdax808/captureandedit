@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Agentation } from 'agentation';
+
+gsap.registerPlugin(ScrollTrigger);
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -49,6 +53,8 @@ export default function App() {
     });
 
     window.__lenis = lenis;
+    lenis.on('scroll', ScrollTrigger.update);
+
     let rafId;
     function raf(time) {
       lenis.raf(time);
@@ -58,6 +64,7 @@ export default function App() {
 
     return () => {
       cancelAnimationFrame(rafId);
+      lenis.off('scroll', ScrollTrigger.update);
       lenis.destroy();
       delete window.__lenis;
     };
