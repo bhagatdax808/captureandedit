@@ -145,7 +145,7 @@ export default function WhyChooseMe() {
               {titleLine1.map((word, idx) => (
                 <span
                   key={idx}
-                  className="why-title-word"
+                  className={`why-title-word ${word === '–' || word === '-' ? 'why-dash-separator' : ''}`}
                 >
                   {word}
                 </span>

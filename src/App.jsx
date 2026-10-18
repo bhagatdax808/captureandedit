@@ -4,18 +4,18 @@ import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Agentation } from 'agentation';
-
 gsap.registerPlugin(ScrollTrigger);
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ChatModal from './components/ChatModal';
 import FramerBadge from './components/FramerBadge';
+import InitialLoader from './components/InitialLoader';
 
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import ProjectsPage from './pages/ProjectsPage';
+import ProjectDetailPage from './pages/ProjectDetailPage';
 import ServicesPage from './pages/ServicesPage';
 import NotFoundPage from './pages/NotFoundPage';
 
@@ -37,12 +37,43 @@ function ScrollToTop() {
   return null;
 }
 
-export default function App() {
+function AppContent() {
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [showLoader, setShowLoader] = useState(true);
+  const location = useLocation();
 
   const handleOpenChat = () => setIsChatOpen(true);
   const handleCloseChat = () => setIsChatOpen(false);
 
+  const isProjectDetail = location.pathname.startsWith('/project/') || location.pathname.startsWith('/projects/');
+  const knownRoutes = ['/', '/about', '/projects', '/portfolio', '/services', '/service'];
+  const is404 = !isProjectDetail && !knownRoutes.includes(location.pathname);
+
+  return (
+    <div className={`app-root ${is404 ? 'is-not-found-page' : ''}`}>
+      {showLoader && <InitialLoader onComplete={() => setShowLoader(false)} />}
+      <Navbar onOpenChat={handleOpenChat} />
+      <main className="main-content-flow">
+        <Routes>
+          <Route path="/" element={<HomePage onOpenChat={handleOpenChat} />} />
+          <Route path="/about" element={<AboutPage onOpenChat={handleOpenChat} />} />
+          <Route path="/projects" element={<ProjectsPage onOpenChat={handleOpenChat} />} />
+          <Route path="/project/:id" element={<ProjectDetailPage onOpenChat={handleOpenChat} />} />
+          <Route path="/projects/:id" element={<ProjectDetailPage onOpenChat={handleOpenChat} />} />
+          <Route path="/portfolio" element={<ProjectsPage onOpenChat={handleOpenChat} />} />
+          <Route path="/services" element={<ServicesPage onOpenChat={handleOpenChat} />} />
+          <Route path="/service" element={<ServicesPage onOpenChat={handleOpenChat} />} />
+          <Route path="*" element={<NotFoundPage onOpenChat={handleOpenChat} />} />
+        </Routes>
+      </main>
+      {!is404 && <Footer onOpenChat={handleOpenChat} />}
+      {!is404 && <FramerBadge />}
+      <ChatModal isOpen={isChatOpen} onClose={handleCloseChat} />
+    </div>
+  );
+}
+
+export default function App() {
   useEffect(() => {
     const lenis = new Lenis({
       lerp: 0.085,
@@ -73,24 +104,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
-      <div className="app-root">
-        <Navbar onOpenChat={handleOpenChat} />
-        <main className="main-content-flow">
-          <Routes>
-            <Route path="/" element={<HomePage onOpenChat={handleOpenChat} />} />
-            <Route path="/about" element={<AboutPage onOpenChat={handleOpenChat} />} />
-            <Route path="/projects" element={<ProjectsPage onOpenChat={handleOpenChat} />} />
-            <Route path="/portfolio" element={<ProjectsPage onOpenChat={handleOpenChat} />} />
-            <Route path="/services" element={<ServicesPage onOpenChat={handleOpenChat} />} />
-            <Route path="/service" element={<ServicesPage onOpenChat={handleOpenChat} />} />
-            <Route path="*" element={<NotFoundPage onOpenChat={handleOpenChat} />} />
-          </Routes>
-        </main>
-        <Footer onOpenChat={handleOpenChat} />
-        <FramerBadge />
-        <ChatModal isOpen={isChatOpen} onClose={handleCloseChat} />
-        <Agentation />
-      </div>
+      <AppContent />
     </BrowserRouter>
   );
 }

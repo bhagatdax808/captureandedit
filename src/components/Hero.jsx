@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import gsap from 'gsap';
 import { clientAvatars } from '../data/portfolioData';
 import StaggerTitle from './StaggerTitle';
 
@@ -11,9 +12,36 @@ export default function Hero({ onOpenChat }) {
     const bgCanvas = bgCanvasRef.current;
     if (!heroEl || !bgCanvas) return;
 
+    // Entrance animation for the bottom frame card and brand block
+    const featureCard = heroEl.querySelector('.hero-feature-card');
+    const brandBlock = heroEl.querySelector('.hero-brand-block');
+    if (featureCard) {
+      gsap.fromTo(
+        featureCard,
+        { opacity: 0, y: 35, scale: 0.97 },
+        { opacity: 1, y: 0, scale: 1, duration: 1.0, ease: 'power3.out', delay: 0.15 }
+      );
+    }
+    if (brandBlock) {
+      gsap.fromTo(
+        brandBlock,
+        { opacity: 0, y: 25 },
+        { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', delay: 0.05 }
+      );
+    }
+
     let ticking = false;
 
     const handleScroll = () => {
+      // Prevent mobile touch scroll stutter/jitter
+      if (window.innerWidth <= 768) {
+        if (bgCanvas.style.transform && bgCanvas.style.transform !== 'none') {
+          bgCanvas.style.transform = 'none';
+        }
+        ticking = false;
+        return;
+      }
+
       const scrollY = window.scrollY || window.pageYOffset;
       const heroHeight = heroEl.offsetHeight;
 

@@ -19,6 +19,15 @@ export default function PageHeroStage({
     let ticking = false;
 
     const handleScroll = () => {
+      // Prevent mobile touch scroll stutter/jitter
+      if (window.innerWidth <= 768) {
+        if (bgCanvas.style.transform && bgCanvas.style.transform !== 'none') {
+          bgCanvas.style.transform = 'none';
+        }
+        ticking = false;
+        return;
+      }
+
       const scrollY = window.scrollY || window.pageYOffset;
       const heroHeight = heroEl.offsetHeight;
 

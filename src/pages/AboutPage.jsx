@@ -33,6 +33,13 @@ export default function AboutPage({ onOpenChat }) {
 
     const handleWhyScroll = () => {
       if (!whyEl || !whyCanvas) return;
+      if (window.innerWidth <= 768) {
+        if (whyCanvas.style.transform && whyCanvas.style.transform !== 'none') {
+          whyCanvas.style.transform = 'none';
+        }
+        ticking = false;
+        return;
+      }
       const scrollY = window.scrollY || window.pageYOffset;
       const rect = whyEl.getBoundingClientRect();
 
@@ -313,10 +320,13 @@ export default function AboutPage({ onOpenChat }) {
             {/* Left Column: Rounded Founder Portrait */}
             <div className="leadership-photo-card">
               <img
-                src="/photos/y6nsXyFCXVHybL6AG2drPt8Xug.webp"
-                alt="Founder Alex Rivera"
+                src="/photos/founder.webp"
+                alt="Founder & Creative Director DAX"
                 className="leadership-photo-img"
               />
+              <div className="leadership-card-tagline">
+                <span>DAX &bull; FOUNDER</span>
+              </div>
             </div>
 
             {/* Right Column: Founder Bio & Expertise Card */}
@@ -324,34 +334,22 @@ export default function AboutPage({ onOpenChat }) {
               <span className="leadership-eyebrow">THE LEADERSHIP</span>
 
               <StaggerTitle as="h2" className="leadership-name">
-                Mr. Alex Rivera
+                DAX
               </StaggerTitle>
 
-              <span className="leadership-role">MANAGING DIRECTOR & FOUNDER &bull; LEAD VIDEO EDITOR</span>
+              <span className="leadership-role">FOUNDER &amp; CREATIVE DIRECTOR &bull; PRINCIPAL CINEMATOGRAPHER</span>
 
               <p className="leadership-bio-text">
-                An alumnus of <strong>L S Raheja</strong> and the visionary founder of <strong>capture&reg; and Edit</strong>,
-                Alex leads our studio with a focus on resourcing and team excellence across photography, cinematography,
-                and post-production video editing.
+                Visionary founder of <strong>Capture &amp; Edits</strong>, Dax directs our studio with an unwavering commitment to optical precision, authentic emotional depth, and editorial refinement.
               </p>
 
               <p className="leadership-bio-text">
-                He meticulously oversees the narrative pacing, audio mastering, and color timing of the organization,
-                ensuring every project is supported by the best artistic talent and highest technical fidelity.
+                With comprehensive mastery spanning medium-format photography, high-speed cinematography, and DaVinci color grading, Dax oversees every visual commission from concept to final master export. His detail-oriented methodology bridges analog film grain aesthetics with modern digital fidelity—ensuring every project endures as an heirloom piece.
               </p>
-
-              {/* Black Rounded Expertise Card */}
-              <div className="leadership-expertise-box">
-                <span className="expertise-label">EXPERTISE</span>
-                <p className="expertise-statement">
-                  Over <strong>18 years</strong> of creating unique identities through signature color timing,
-                  narrative editing, and architectural precision.
-                </p>
-              </div>
 
               {/* Quote Underneath */}
               <blockquote className="leadership-quote">
-                &ldquo;Detailing is not just a part of the process—it's the identity of the space and the soul of the memory.&rdquo;
+                &ldquo;Detailing is never an afterthought—it is the identity of the frame and the soul of the memory.&rdquo;
               </blockquote>
             </div>
           </div>

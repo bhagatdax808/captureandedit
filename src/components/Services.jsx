@@ -64,6 +64,17 @@ export default function Services({ onOpenChat }) {
 
   return (
     <section className="section-services-dark" id="services" ref={sectionRef}>
+      {/* Top Header Services */}
+      <div className="services-header-top">
+        <span className="services-tag-pill">Services</span>
+        <h2 className="services-headline">
+          <span>Tailored Creative</span> <span className="serif-italic">Services</span>
+        </h2>
+        <p className="services-lead-text">
+          Comprehensive photography &amp; film post-production services designed to capture real emotions and heirloom moments.
+        </p>
+      </div>
+
       <div className="services-layout">
         {/* Left Column: Dynamic Updating Card + Quote + CTA */}
         <div className="service-display-pane">

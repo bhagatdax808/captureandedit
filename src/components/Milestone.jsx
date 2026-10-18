@@ -185,6 +185,9 @@ export default function Milestone({ onOpenChat }) {
           );
         });
       } else if (!isDesktop && showcaseGridRef.current) {
+        if (rowTopRef.current) rowTopRef.current.style.transform = 'none';
+        if (rowBottomRef.current) rowBottomRef.current.style.transform = 'none';
+
         // Mobile responsive vertical scroll reveal
         const mobileItems = showcaseGridRef.current.querySelectorAll('.portfolio-showcase-item');
         mobileItems.forEach((item) => {
