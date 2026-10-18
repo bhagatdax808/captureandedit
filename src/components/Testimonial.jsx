@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import StaggerTitle from './StaggerTitle';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const testimonials = [
   {
@@ -40,6 +44,30 @@ const testimonials = [
 export default function Testimonial() {
   const [currentIdx, setCurrentIdx] = useState(1);
   const [isFading, setIsFading] = useState(false);
+  const gridRef = useRef(null);
+
+  useEffect(() => {
+    const el = gridRef.current;
+    if (!el) return;
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        el,
+        { opacity: 0, y: 55, scale: 0.98 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.95,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 85%',
+          },
+        }
+      );
+    });
+    return () => ctx.revert();
+  }, []);
 
   const switchSlide = (newIndex) => {
     if (isFading || newIndex === currentIdx) return;
@@ -82,7 +110,7 @@ export default function Testimonial() {
         </div>
 
         {/* 2-Column Card Grid with Equal Sizing */}
-        <div className="testimonial-grid">
+        <div className="testimonial-grid" ref={gridRef}>
           {/* Left: Quote Card */}
           <div className={"testimonial-quote-card " + (isFading ? "card-fading" : "card-visible")}>
             <div className="testimonial-quote-body">

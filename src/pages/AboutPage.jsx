@@ -266,12 +266,6 @@ export default function AboutPage({ onOpenChat }) {
         titleTag="Vision & Heritage"
         description="A leading team of photographers, cinematographers, and colorists providing superior visual space-planning, heirloom installations, and cinematic storytelling worldwide since 2003."
         bgImage="/photos/atJSGWOSmoPWXD4zqFDhjEhPltc.webp"
-        cardImage="/photos/y6nsXyFCXVHybL6AG2drPt8Xug.webp"
-        cardTitle={"Mr. Alex Rivera\nManaging Director & Lead Editor"}
-        cardSubtitle="Over 18 Years Legacy"
-        cardButtonText="Meet Founder"
-        onCardButtonClick={scrollToLeadership}
-        badgeText="Documenting Spaces Since 2003"
       />
 
       {/* Brand Partners Strip & 3-Photo Vertical Parallax Showcase */}
@@ -371,8 +365,8 @@ export default function AboutPage({ onOpenChat }) {
         {/* Fixed Background Canvas for Vertical Window-Frame Scrolling */}
         <div className="why-choose-bg-fixed-canvas hero-bg-fixed-canvas" ref={whyBgCanvasRef}>
           <img
-            src="/photos/PtOmfIDqFPfLwMMucdVIw0jwKwk.webp"
-            alt="Cinematic background atmosphere"
+            src="/photos/O5zBxpFSElG3tg3rPxJNqC0hOSs.webp"
+            alt="Luminous architectural photography"
             className="why-choose-bg-media hero-bg-media"
           />
           <div className="why-choose-overlay hero-overlay" />
@@ -391,7 +385,7 @@ export default function AboutPage({ onOpenChat }) {
           <div className="why-choose-header">
             <div>
               <StaggerTitle as="h2" className="why-choose-title">
-                Why choosing CAN Designs?
+                Why choosing capture &amp; edits?
               </StaggerTitle>
             </div>
             <p className="why-choose-sub">

@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Plus, Minus } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import StaggerTitle from './StaggerTitle';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const faqItems = [
   {
@@ -32,10 +36,37 @@ const faqItems = [
 
 export default function Faq() {
   const [openIndex, setOpenIndex] = useState(null);
+  const listRef = useRef(null);
 
   const toggleItem = (idx) => {
     setOpenIndex(openIndex === idx ? null : idx);
   };
+
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list) return;
+    const ctx = gsap.context(() => {
+      const items = list.querySelectorAll('.faq-accordion-item');
+      if (items.length) {
+        gsap.fromTo(
+          items,
+          { opacity: 0, y: 35 },
+          {
+            opacity: 1,
+            y: 0,
+            stagger: 0.08,
+            duration: 0.8,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: list,
+              start: 'top 85%',
+            },
+          }
+        );
+      }
+    });
+    return () => ctx.revert();
+  }, []);
 
   return (
     <section id="faq" className="faq-section">
@@ -57,7 +88,7 @@ export default function Faq() {
         </div>
 
         {/* FAQ Accordion List */}
-        <div className="faq-list">
+        <div className="faq-list" ref={listRef}>
           {faqItems.map((item, idx) => {
             const isOpen = openIndex === idx;
             return (

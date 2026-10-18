@@ -80,12 +80,6 @@ export default function ReviewsPage({ onOpenChat }) {
         titleTag="Client Words"
         description="Over 1,000 completed assignments spanning 12 countries. Unfiltered feedback reflecting authentic emotion, quiet elegance, and heirloom memories."
         bgImage="/photos/vLEsMK3fGOYhOVUMV0xti7bThh8.webp"
-        cardImage="/photos/y6nsXyFCXVHybL6AG2drPt8Xug.webp"
-        cardTitle={"140+ Five-Star\nClient Praise"}
-        cardSubtitle="100% Satisfaction"
-        cardButtonText="Book Now"
-        onCardButtonClick={onOpenChat}
-        badgeText="100% Client Satisfaction"
       />
 
       {/* Stats & Filter Bar Section */}

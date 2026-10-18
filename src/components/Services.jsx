@@ -1,9 +1,55 @@
-﻿import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { servicesData } from '../data/portfolioData';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Services({ onOpenChat }) {
   const [activeServiceId, setActiveServiceId] = useState('weddings');
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const ctx = gsap.context(() => {
+      const pane = el.querySelector('.service-display-pane');
+      const list = el.querySelector('.service-items-list');
+      if (pane && list) {
+        gsap.fromTo(
+          pane,
+          { opacity: 0, x: -40 },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.9,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 85%',
+            },
+          }
+        );
+        gsap.fromTo(
+          list.children,
+          { opacity: 0, x: 40 },
+          {
+            opacity: 1,
+            x: 0,
+            stagger: 0.08,
+            duration: 0.85,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 85%',
+            },
+          }
+        );
+      }
+    });
+    return () => ctx.revert();
+  }, []);
 
   const activeService = servicesData.find((s) => s.id === activeServiceId) || servicesData[2];
 
@@ -17,7 +63,7 @@ export default function Services({ onOpenChat }) {
   };
 
   return (
-    <section className="section-services-dark" id="services">
+    <section className="section-services-dark" id="services" ref={sectionRef}>
       <div className="services-layout">
         {/* Left Column: Dynamic Updating Card + Quote + CTA */}
         <div className="service-display-pane">

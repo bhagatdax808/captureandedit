@@ -17,8 +17,7 @@ import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import ProjectsPage from './pages/ProjectsPage';
 import ServicesPage from './pages/ServicesPage';
-import ReviewsPage from './pages/ReviewsPage';
-import FaqPage from './pages/FaqPage';
+import NotFoundPage from './pages/NotFoundPage';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -29,6 +28,10 @@ function ScrollToTop() {
     } else {
       window.scrollTo(0, 0);
     }
+    const timer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 120);
+    return () => clearTimeout(timer);
   }, [pathname]);
 
   return null;
@@ -80,12 +83,10 @@ export default function App() {
             <Route path="/portfolio" element={<ProjectsPage onOpenChat={handleOpenChat} />} />
             <Route path="/services" element={<ServicesPage onOpenChat={handleOpenChat} />} />
             <Route path="/service" element={<ServicesPage onOpenChat={handleOpenChat} />} />
-            <Route path="/reviews" element={<ReviewsPage onOpenChat={handleOpenChat} />} />
-            <Route path="/faq" element={<FaqPage onOpenChat={handleOpenChat} />} />
-            <Route path="*" element={<HomePage onOpenChat={handleOpenChat} />} />
+            <Route path="*" element={<NotFoundPage onOpenChat={handleOpenChat} />} />
           </Routes>
         </main>
-        <Footer />
+        <Footer onOpenChat={handleOpenChat} />
         <FramerBadge />
         <ChatModal isOpen={isChatOpen} onClose={handleCloseChat} />
         <Agentation />

@@ -1,13 +1,90 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Sparkles, Check, ArrowUpRight, Calculator, Clock, Film, ShieldCheck } from 'lucide-react';
 import StaggerTitle from '../components/StaggerTitle';
 import PageHeroStage from '../components/PageHeroStage';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function ServicesPage({ onOpenChat }) {
   const [selectedService, setSelectedService] = useState('wedding');
   const [shootDuration, setShootDuration] = useState('full');
   const [includeFilm, setIncludeFilm] = useState(true);
   const [includeAlbum, setIncludeAlbum] = useState(false);
+
+  const packagesRef = useRef(null);
+  const calcRef = useRef(null);
+  const processRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // 1. Staggered reveal for Package Cards
+      if (packagesRef.current) {
+        const cards = packagesRef.current.querySelectorAll('.package-card');
+        if (cards.length) {
+          gsap.fromTo(
+            cards,
+            { opacity: 0, y: 50, scale: 0.97 },
+            {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              stagger: 0.12,
+              duration: 0.9,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: packagesRef.current,
+                start: 'top 85%',
+              },
+            }
+          );
+        }
+      }
+
+      // 2. Reveal for Calculator Card
+      if (calcRef.current) {
+        gsap.fromTo(
+          calcRef.current,
+          { opacity: 0, y: 60 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: calcRef.current,
+              start: 'top 80%',
+            },
+          }
+        );
+      }
+
+      // 3. Staggered reveal for Process Timeline Steps
+      if (processRef.current) {
+        const steps = processRef.current.querySelectorAll('.process-step-card');
+        if (steps.length) {
+          gsap.fromTo(
+            steps,
+            { opacity: 0, y: 40 },
+            {
+              opacity: 1,
+              y: 0,
+              stagger: 0.1,
+              duration: 0.85,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: processRef.current,
+                start: 'top 85%',
+              },
+            }
+          );
+        }
+      }
+    });
+
+    return () => ctx.revert();
+  }, []);
 
   const baseRates = {
     wedding: { half: 3200, full: 5400, multi: 8800, name: 'Documentary Wedding' },
@@ -88,22 +165,16 @@ export default function ServicesPage({ onOpenChat }) {
 
   return (
     <div className="page-wrapper services-detail-page">
-      {/* Home Screen Type Stage Frame */}
+      {/* Home Screen Type Stage Frame (Clean without feature preview card) */}
       <PageHeroStage
         titleMain="services®"
         titleTag="Offerings & Rates"
         description="Tailored visual commissions for discerning couples and commercial brands across documentary photography, calibrated DaVinci color grading, and archival printing."
         bgImage="/photos/eS4Rwaq0KdMka7YC0Lt7QwVvpk.webp"
-        cardImage="/photos/5QD4gq8SXUlDrEqPWmWKw4gsB0Y.webp"
-        cardTitle={"Bespoke Packages &\nLive Estimator"}
-        cardSubtitle="Starting at $1,800"
-        cardButtonText="Book Session"
-        onCardButtonClick={onOpenChat}
-        badgeText="Worldwide Availability"
       />
 
       {/* Detailed Package Cards Grid */}
-      <section className="packages-grid-section">
+      <section className="packages-grid-section" ref={packagesRef}>
         <div className="page-container">
           <div className="packages-cards-grid">
             {detailedPackages.map((pkg) => (
@@ -140,7 +211,7 @@ export default function ServicesPage({ onOpenChat }) {
       {/* Interactive Price Estimator & Calculator */}
       <section className="pricing-calculator-section">
         <div className="page-container">
-          <div className="calculator-wrapper-card">
+          <div className="calculator-wrapper-card" ref={calcRef}>
             <div className="calculator-info-pane">
               <div className="calculator-badge">
                 <Calculator size={15} />
@@ -276,7 +347,7 @@ export default function ServicesPage({ onOpenChat }) {
             </h2>
           </div>
 
-          <div className="process-steps-grid">
+          <div className="process-steps-grid" ref={processRef}>
             {processSteps.map((s) => (
               <div key={s.step} className="process-step-card">
                 <span className="step-number">{s.step}</span>

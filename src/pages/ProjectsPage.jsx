@@ -1,12 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowUpRight, Filter, X, Sliders, Eye } from 'lucide-react';
 import StaggerTitle from '../components/StaggerTitle';
 import PageHeroStage from '../components/PageHeroStage';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function ProjectsPage({ onOpenChat }) {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [activeModalItem, setActiveModalItem] = useState(null);
   const [sliderPos, setSliderPos] = useState(50);
+
+  const gridRef = useRef(null);
+  const craftRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      if (gridRef.current) {
+        const items = gridRef.current.querySelectorAll('.portfolio-item');
+        if (items.length) {
+          gsap.fromTo(
+            items,
+            { opacity: 0, y: 55, scale: 0.97 },
+            {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              stagger: 0.1,
+              duration: 0.9,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: gridRef.current,
+                start: 'top 85%',
+              },
+            }
+          );
+        }
+      }
+
+      if (craftRef.current) {
+        gsap.fromTo(
+          craftRef.current,
+          { opacity: 0, y: 50 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.95,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: craftRef.current,
+              start: 'top 85%',
+            },
+          }
+        );
+      }
+    });
+
+    return () => ctx.revert();
+  }, [selectedCategory]);
 
   const categories = [
     { id: 'all', label: 'All Works' },
@@ -31,18 +83,12 @@ export default function ProjectsPage({ onOpenChat }) {
 
   return (
     <div className="page-wrapper projects-archive-page">
-      {/* Home Screen Type Stage Frame */}
+      {/* Home Screen Type Stage Frame (Clean without feature preview card) */}
       <PageHeroStage
         titleMain="archive®"
         titleTag="Selected Works"
         description="Documentary commissions & visual explorations from destination weddings in Lake Como to high-fashion campaigns in Milan, preserved in authentic grain and timeless emotion."
         bgImage="/photos/uZATchhlmCzRZorlIrEqVvh7bc.webp"
-        cardImage="/photos/EDjXZUxH9PUJ4Sc3htDzn89mi0.webp"
-        cardTitle={"Fine Art & Documentary\nPortfolio"}
-        cardSubtitle="© 2026 Archive"
-        cardButtonText="Let's chat"
-        onCardButtonClick={onOpenChat}
-        badgeText="1,000+ Projects Completed"
       />
 
       {/* Category Filter Bar */}
@@ -63,7 +109,7 @@ export default function ProjectsPage({ onOpenChat }) {
       </section>
 
       {/* Interactive Before & After RAW vs Grade Slider */}
-      <section className="color-grading-section">
+      <section className="color-grading-section" ref={craftRef}>
         <div className="page-container">
           <div className="grading-header-center">
             <span className="section-sublabel">THE CRAFT</span>
@@ -127,7 +173,7 @@ export default function ProjectsPage({ onOpenChat }) {
       {/* Projects Masonry Grid */}
       <section className="projects-grid-section">
         <div className="page-container">
-          <div className="portfolio-grid">
+          <div className="portfolio-grid" ref={gridRef}>
             {filtered.map((item) => (
               <div key={item.id} className={'portfolio-item ' + item.span}>
                 <div

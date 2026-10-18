@@ -102,12 +102,6 @@ export default function FaqPage({ onOpenChat }) {
         titleTag="Studio Knowledge"
         description="Everything you need to know about the creative workflow, booking procedures, deliverables, rights licensing, and on-location policies."
         bgImage="/photos/5WjX1vJg991GRNOY7QwweeYhYUA.webp"
-        cardImage="/photos/PtOmfIDqFPfLwMMucdVIw0jwKwk.webp"
-        cardTitle={"Frequently Asked\nQuestions"}
-        cardSubtitle="Instant Answers"
-        cardButtonText="Ask Alex"
-        onCardButtonClick={onOpenChat}
-        badgeText="Immediate Answers & Support"
       />
 
       {/* Search & Category Filter Section */}

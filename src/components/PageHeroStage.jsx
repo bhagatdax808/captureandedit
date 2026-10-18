@@ -6,10 +6,6 @@ export default function PageHeroStage({
   titleTag = 'and Edit',
   description = '',
   bgImage = '/photos/firstpage.webp',
-  cardTitle = 'Professional creative\nphotography',
-  cardSubtitle = '© 2026',
-  cardButtonText = "Let's chat",
-  onCardButtonClick,
   extraAction,
 }) {
   const heroRef = useRef(null);
@@ -79,8 +75,8 @@ export default function PageHeroStage({
         <span className="cross-mark">+</span>
       </div>
 
-      {/* Bottom Information Grid */}
-      <div className="hero-bottom-grid">
+      {/* Bottom Information Block firmly anchored to the left-side bottom */}
+      <div className="hero-bottom-grid page-hero-bottom-single">
         <div className="hero-brand-block">
           <div className="hero-title-group">
             <h1 className="hero-huge-title">
@@ -96,28 +92,6 @@ export default function PageHeroStage({
             </p>
           )}
           {extraAction}
-        </div>
-
-        {/* Floating Glassmorphic Feature Card (Clean without image preview) */}
-        <div className="hero-feature-card hero-glass-card">
-          <div className="card-top-content">
-            <StaggerTitle as="h3" className="card-title-text" triggerStart="top 95%">
-              {cardTitle}
-            </StaggerTitle>
-          </div>
-
-          <div className="card-footer-row">
-            <span className="card-year">{cardSubtitle}</span>
-            {cardButtonText && (
-              <button
-                className="card-chat-btn"
-                type="button"
-                onClick={onCardButtonClick}
-              >
-                {cardButtonText}
-              </button>
-            )}
-          </div>
         </div>
       </div>
     </section>

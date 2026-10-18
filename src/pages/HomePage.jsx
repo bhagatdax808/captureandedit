@@ -2,7 +2,6 @@ import React from 'react';
 import Hero from '../components/Hero';
 import About from '../components/About';
 import Milestone from '../components/Milestone';
-import Portfolio from '../components/Portfolio';
 import WhyChooseMe from '../components/WhyChooseMe';
 import Testimonial from '../components/Testimonial';
 import Services from '../components/Services';
@@ -16,7 +15,6 @@ export default function HomePage({ onOpenChat }) {
       <Hero onOpenChat={onOpenChat} />
       <About onOpenChat={onOpenChat} />
       <Milestone onOpenChat={onOpenChat} />
-      <Portfolio />
       <WhyChooseMe />
       <Services onOpenChat={onOpenChat} />
       <RibbonShowcase />
