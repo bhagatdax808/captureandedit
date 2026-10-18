@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Sparkles, Check, ArrowUpRight, Calculator, Clock, Film, ShieldCheck } from 'lucide-react';
+import StaggerTitle from '../components/StaggerTitle';
+import PageHeroStage from '../components/PageHeroStage';
 
 export default function ServicesPage({ onOpenChat }) {
   const [selectedService, setSelectedService] = useState('wedding');
@@ -86,23 +88,19 @@ export default function ServicesPage({ onOpenChat }) {
 
   return (
     <div className="page-wrapper services-detail-page">
-      {/* Hero Header */}
-      <section className="page-header-hero">
-        <div className="page-container">
-          <div className="page-eyebrow-pill">
-            <Sparkles size={15} />
-            <span>Signature Offerings</span>
-          </div>
-          <h1 className="page-hero-title">
-            Tailored visual commissions for <br />
-            <span className="serif-italic">discerning couples & brands</span>.
-          </h1>
-          <p className="page-hero-subtitle">
-            Every assignment includes creative direction, meticulous lighting design, authentic analog film scans,
-            and full worldwide travel availability.
-          </p>
-        </div>
-      </section>
+      {/* Home Screen Type Stage Frame */}
+      <PageHeroStage
+        titleMain="services®"
+        titleTag="Offerings & Rates"
+        description="Tailored visual commissions for discerning couples and commercial brands across documentary photography, calibrated DaVinci color grading, and archival printing."
+        bgImage="/photos/eS4Rwaq0KdMka7YC0Lt7QwVvpk.webp"
+        cardImage="/photos/5QD4gq8SXUlDrEqPWmWKw4gsB0Y.webp"
+        cardTitle={"Bespoke Packages &\nLive Estimator"}
+        cardSubtitle="Starting at $1,800"
+        cardButtonText="Book Session"
+        onCardButtonClick={onOpenChat}
+        badgeText="Worldwide Availability"
+      />
 
       {/* Detailed Package Cards Grid */}
       <section className="packages-grid-section">

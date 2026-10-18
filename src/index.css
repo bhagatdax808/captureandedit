@@ -1069,6 +1069,24 @@ footer.site-footer {
   color: #050505;
 }
 
+.why-title-line {
+  display: block;
+}
+
+.why-title-word,
+.stagger-word {
+  display: inline-block;
+  will-change: transform, opacity, filter;
+}
+
+.why-title-word {
+  margin-right: 0.28em;
+}
+
+.why-title-word:last-child {
+  margin-right: 0;
+}
+
 .bento-container {
   display: flex;
   flex-direction: column;
@@ -1705,8 +1723,8 @@ footer.site-footer {
 
 .testimonial-grid {
   display: grid;
-  grid-template-columns: 48% 1fr;
-  gap: 1.8rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem;
   align-items: stretch;
 }
 
@@ -1719,7 +1737,15 @@ footer.site-footer {
   flex-direction: column;
   justify-content: space-between;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
-  min-height: 440px;
+  height: 500px;
+  min-height: 500px;
+  box-sizing: border-box;
+}
+
+.testimonial-quote-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .star-rating {
@@ -1727,15 +1753,19 @@ footer.site-footer {
   gap: 4px;
   color: #ff6a00;
   font-size: 1.35rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .quote-text {
-  font-size: clamp(1.05rem, 1.4vw, 1.22rem);
-  line-height: 1.7;
+  font-size: clamp(1.02rem, 1.25vw, 1.18rem);
+  line-height: 1.68;
   color: #2b2b2b;
   font-weight: 400;
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 7;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .quote-footer {
@@ -1744,6 +1774,7 @@ footer.site-footer {
   align-items: flex-end;
   padding-top: 1.5rem;
   border-top: 1px solid #f2f2f0;
+  margin-top: auto;
 }
 
 .author-name {
@@ -1768,16 +1799,33 @@ footer.site-footer {
   position: relative;
   border-radius: 28px;
   overflow: hidden;
-  min-height: 440px;
+  height: 500px;
+  min-height: 500px;
   background: #000000;
+  box-sizing: border-box;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
 }
 
 .testimonial-photo-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   filter: grayscale(100%);
-  transition: opacity 0.4s ease;
+  display: block;
+  transition: opacity 0.35s ease, filter 0.4s ease, transform 0.6s ease;
+}
+
+.testimonial-photo-card:hover .testimonial-photo-img {
+  filter: grayscale(20%);
+  transform: scale(1.03);
+}
+
+.testimonial-photo-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.05) 30%, transparent 60%);
 }
 
 .testimonial-nav-arrows {
@@ -1793,9 +1841,9 @@ footer.site-footer {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -2002,11 +2050,50 @@ footer.site-footer {
 }
 
 @media (max-width: 900px) {
+  .testimonial-section {
+    padding: 5rem 1.5rem 4rem;
+  }
   .testimonial-grid {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .testimonial-quote-card {
+    height: auto;
+    min-height: 380px;
+    padding: 2.4rem 2rem;
+  }
+  .testimonial-photo-card {
+    height: 400px;
+    min-height: 400px;
+    width: 100%;
   }
   .form-row-dual {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .testimonial-section {
+    padding: 4rem 1.25rem 3rem;
+  }
+  .testimonial-quote-card {
+    min-height: 340px;
+    padding: 1.8rem 1.4rem;
+    border-radius: 20px;
+  }
+  .testimonial-photo-card {
+    height: 320px;
+    min-height: 320px;
+    border-radius: 20px;
+  }
+  .quote-text {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 1.2rem;
+  }
+  .testimonial-nav-arrows {
+    bottom: 1.25rem;
+    right: 1.25rem;
   }
 }
 
@@ -2954,4 +3041,705 @@ footer.site-footer {
   .reviews-stats-strip { grid-template-columns: 1fr !important; }
   .reviews-masonry-grid { grid-template-columns: 1fr !important; }
   .lightbox-modal-card { grid-template-columns: 1fr !important; }
+}
+
+/* =============================================================
+   ABOUT US REDESIGN (BASED ON REFERENCE SPECIFICATION)
+   ============================================================= */
+
+/* 1. Header with Logo & Brand Eyebrow */
+.about-hero-reference {
+  padding: 120px 0 60px 0 !important;
+  background: #ffffff !important;
+  text-align: center !important;
+}
+
+.about-brand-header {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin-bottom: 28px !important;
+}
+
+.brand-aperture-symbol {
+  width: 38px !important;
+  height: 38px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #111111 !important;
+}
+
+.about-brand-titles {
+  text-align: left !important;
+}
+
+.about-brand-title {
+  font-family: 'Manrope', sans-serif !important;
+  font-size: 19px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+  color: #111111 !important;
+  line-height: 1 !important;
+  text-transform: uppercase !important;
+}
+
+.about-brand-sub {
+  font-family: 'Manrope', sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.14em !important;
+  color: #777777 !important;
+  text-transform: uppercase !important;
+  margin-top: 3px !important;
+  display: block !important;
+}
+
+.about-main-heading {
+  font-family: 'Manrope', sans-serif !important;
+  font-size: clamp(2.8rem, 5.5vw, 4.8rem) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.04em !important;
+  color: #111111 !important;
+  margin: 0 0 20px 0 !important;
+  line-height: 1.08 !important;
+}
+
+.about-main-subtitle {
+  font-family: 'Manrope', sans-serif !important;
+  font-size: clamp(1.05rem, 1.4vw, 1.25rem) !important;
+  line-height: 1.65 !important;
+  color: #555555 !important;
+  max-width: 720px !important;
+  margin: 0 auto 36px auto !important;
+  font-weight: 400 !important;
+}
+
+.about-client-strip {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 36px !important;
+  flex-wrap: wrap !important;
+  margin-bottom: 50px !important;
+  padding: 12px 0 !important;
+}
+
+.client-strip-logo {
+  font-family: 'Manrope', sans-serif !important;
+  font-size: 13.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  color: #888888 !important;
+  text-transform: uppercase !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.client-strip-logo svg {
+  color: #444444 !important;
+}
+
+/* 3 Rounded Showcase Cards with Vertical Scrolling Parallax (Screenshot 1) */
+.about-trio-showcase {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 28px !important;
+  margin-bottom: 90px !important;
+  align-items: start !important;
+  position: relative !important;
+}
+
+.trio-col-wrap {
+  position: relative !important;
+  will-change: transform !important;
+}
+
+@media (min-width: 769px) {
+  .trio-col-2 {
+    margin-top: 50px !important;
+  }
+}
+
+.trio-card {
+  position: relative !important;
+  border-radius: 26px !important;
+  overflow: hidden !important;
+  height: 480px !important;
+  background: #111111 !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08) !important;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease !important;
+}
+
+.trio-card:hover {
+  transform: translateY(-6px) scale(1.01) !important;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.16) !important;
+}
+
+.trio-img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.trio-card:hover .trio-img {
+  transform: scale(1.06) !important;
+}
+
+.trio-card-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 45%, transparent 75%) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-end !important;
+  padding: 28px !important;
+  color: #ffffff !important;
+  pointer-events: none !important;
+}
+
+.trio-card-tag {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.1em !important;
+  color: #ff6a00 !important;
+  margin-bottom: 6px !important;
+}
+
+.trio-card-title {
+  font-family: 'Manrope', sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  margin: 0 !important;
+  color: #ffffff !important;
+}
+
+/* 2. Leadership / Principal Section (Screenshot 2) */
+.about-leadership-section {
+  position: relative !important;
+  padding: 80px 0 100px 0 !important;
+  background: #ffffff !important;
+  overflow: hidden !important;
+}
+
+.leadership-watermark {
+  position: absolute !important;
+  top: 15px !important;
+  right: 5% !important;
+  font-family: 'Manrope', sans-serif !important;
+  font-size: clamp(5rem, 11vw, 11rem) !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.05em !important;
+  color: rgba(0, 0, 0, 0.035) !important;
+  user-select: none !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+  text-transform: uppercase !important;
+}
+
+.leadership-grid {
+  position: relative !important;
+  z-index: 2 !important;
+  display: grid !important;
+  grid-template-columns: 46% 1fr !important;
+  gap: 56px !important;
+  align-items: center !important;
+}
+
+.leadership-photo-card {
+  position: relative !important;
+  border-radius: 28px !important;
+  overflow: hidden !important;
+  background: #000000 !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12) !important;
+  height: 520px !important;
+}
+
+.leadership-photo-img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center 25% !important;
+  display: block !important;
+}
+
+.leadership-eyebrow {
+  font-family: 'Manrope', sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.14em !important;
+  color: #888888 !important;
+  display: block !important;
+  margin-bottom: 12px !important;
+}
+
+.leadership-name {
+  font-family: 'Manrope', sans-serif !important;
+  font-size: clamp(2.4rem, 4vw, 3.4rem) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.03em !important;
+  color: #111111 !important;
+  margin: 0 0 8px 0 !important;
+  line-height: 1.12 !important;
+}
+
+.leadership-role {
+  font-family: 'Manrope', sans-serif !important;
+  font-size: 13.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.12em !important;
+  color: #555555 !important;
+  text-transform: uppercase !important;
+  display: block !important;
+  margin-bottom: 28px !important;
+}
+
+.leadership-bio-text {
+  font-family: 'Manrope', sans-serif !important;
+  font-size: 16px !important;
+  line-height: 1.7 !important;
+  color: #444444 !important;
+  margin-bottom: 18px !important;
+}
+
+.leadership-bio-text strong {
+  color: #111111 !important;
+  font-weight: 700 !important;
+}
+
+.leadership-expertise-box {
+  background: #0d0d0f !important;
+  border-radius: 18px !important;
+  padding: 24px 28px !important;
+  color: #ffffff !important;
+  margin: 28px 0 24px 0 !important;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.08) !important;
+}
+
+.expertise-label {
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  color: #999999 !important;
+  display: block !important;
+  margin-bottom: 8px !important;
+}
+
+.expertise-statement {
+  font-family: 'Manrope', sans-serif !important;
+  font-size: 15.5px !important;
+  line-height: 1.55 !important;
+  color: #ffffff !important;
+  margin: 0 !important;
+}
+
+.expertise-statement strong {
+  color: #ffffff !important;
+  font-weight: 800 !important;
+}
+
+.leadership-quote {
+  font-family: 'Instrument Serif', Georgia, serif !important;
+  font-style: italic !important;
+  font-size: 1.35rem !important;
+  line-height: 1.45 !important;
+  color: #555555 !important;
+  border-left: 2px solid #111111 !important;
+  padding-left: 18px !important;
+  margin: 20px 0 0 0 !important;
+}
+
+/* 3. Why Choose Us Section with Background Photo & Static Frame-Up Animation */
+/* -------------------------------------------------------------
+   PAGE HERO STAGE & WHY CHOOSE WINDOW-FRAME SCROLLING
+------------------------------------------------------------- */
+.page-hero-stage {
+  width: calc(100% - 32px) !important;
+  margin: 0 auto 40px auto !important;
+}
+
+.projects-filter-section,
+.reviews-meta-section,
+.faq-search-section {
+  padding: 20px 0 50px 0 !important;
+  background: #ffffff !important;
+}
+
+/* 3. Why Choose Us Section with Background Photo & Home Screen Frame Animation */
+.why-choose-dark-section {
+  position: relative !important;
+  width: calc(100% - 32px) !important;
+  margin: 0 auto 60px auto !important;
+  border-radius: 20px !important;
+  overflow: hidden !important;
+  padding: 110px 3.5rem 90px 3.5rem !important;
+  background-color: #0b0c10 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45) !important;
+}
+
+.why-choose-bg-fixed-canvas {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100vh !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+  will-change: transform !important;
+}
+
+.why-choose-bg-media {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  z-index: 1 !important;
+  filter: contrast(1.1) brightness(0.62) !important;
+}
+
+.why-choose-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 2 !important;
+  background: 
+    radial-gradient(circle at center, rgba(10, 12, 16, 0.6) 0%, rgba(8, 9, 12, 0.94) 100%),
+    linear-gradient(180deg, rgba(8, 9, 12, 0.92) 0%, rgba(10, 12, 16, 0.6) 50%, rgba(8, 9, 12, 0.96) 100%) !important;
+  pointer-events: none !important;
+}
+
+.why-choose-container {
+  position: relative !important;
+  z-index: 4 !important;
+}
+
+.why-choose-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-end !important;
+  margin-bottom: 56px !important;
+  gap: 32px !important;
+}
+
+.why-choose-title {
+  font-family: 'Manrope', sans-serif !important;
+  font-size: clamp(2.4rem, 4.2vw, 3.6rem) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.03em !important;
+  color: #ffffff !important;
+  margin: 0 !important;
+  line-height: 1.15 !important;
+}
+
+.why-choose-sub {
+  font-family: 'Manrope', sans-serif !important;
+  font-size: 16px !important;
+  line-height: 1.6 !important;
+  color: rgba(255, 255, 255, 0.72) !important;
+  max-width: 440px !important;
+  margin: 0 !important;
+}
+
+.why-choose-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 24px !important;
+  overflow: hidden !important;
+  background: rgba(14, 14, 18, 0.45) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  margin-bottom: 48px !important;
+}
+
+.why-choose-card {
+  padding: 44px 36px !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: rgba(22, 22, 28, 0.35) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  min-height: 250px !important;
+  position: relative !important;
+  transition: all 0.35s ease !important;
+}
+
+.why-choose-card:hover {
+  background: rgba(255, 255, 255, 0.07) !important;
+  transform: translateY(-2px) !important;
+}
+
+.why-choose-card:nth-child(3n) {
+  border-right: none !important;
+}
+
+.why-choose-card:nth-child(n+4) {
+  border-bottom: none !important;
+}
+
+.card-icon-num-row {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 24px !important;
+}
+
+.card-feature-icon {
+  width: 32px !important;
+  height: 32px !important;
+  color: #ff6a00 !important;
+}
+
+.card-num-watermark {
+  font-family: 'Manrope', sans-serif !important;
+  font-size: 28px !important;
+  font-weight: 800 !important;
+  color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.card-feature-title {
+  font-family: 'Manrope', sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  color: #ffffff !important;
+  margin: 0 0 12px 0 !important;
+}
+
+.card-feature-desc {
+  font-family: 'Manrope', sans-serif !important;
+  font-size: 14.5px !important;
+  line-height: 1.62 !important;
+  color: rgba(255, 255, 255, 0.65) !important;
+  margin: 0 !important;
+}
+
+.why-choose-bottom-stats {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 24px 8px 0 8px !important;
+  font-family: 'Manrope', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.stat-dot-separator {
+  color: #ff6a00 !important;
+  margin-right: 8px !important;
+}
+
+/* 5. Client Voices (Screenshot 5) */
+.client-voices-section {
+  padding: 100px 0 !important;
+  background: #ffffff !important;
+}
+
+.client-voices-header {
+  text-align: center !important;
+  margin-bottom: 56px !important;
+}
+
+.client-voices-title {
+  font-family: 'Manrope', sans-serif !important;
+  font-size: clamp(2.4rem, 4.4vw, 3.6rem) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.03em !important;
+  color: #111111 !important;
+  margin: 0 0 14px 0 !important;
+}
+
+.client-voices-sub {
+  font-family: 'Manrope', sans-serif !important;
+  font-size: 16.5px !important;
+  color: #666666 !important;
+  max-width: 600px !important;
+  margin: 0 auto !important;
+  line-height: 1.6 !important;
+}
+
+.client-voices-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 28px !important;
+  margin-bottom: 50px !important;
+}
+
+.voice-card {
+  background: #fbfbfb !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-radius: 24px !important;
+  padding: 36px 32px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03) !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.voice-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06) !important;
+}
+
+.voice-stars-row {
+  display: flex !important;
+  gap: 4px !important;
+  color: #ff5038 !important;
+  font-size: 16px !important;
+  margin-bottom: 20px !important;
+}
+
+.voice-quote-text {
+  font-family: 'Manrope', sans-serif !important;
+  font-size: 15px !important;
+  line-height: 1.65 !important;
+  color: #2b2b2b !important;
+  margin-bottom: 28px !important;
+  flex: 1 !important;
+}
+
+.voice-author-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+}
+
+.voice-avatar-initial {
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 50% !important;
+  background: #ebebee !important;
+  color: #333333 !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-transform: uppercase !important;
+}
+
+.voice-author-info {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.voice-author-name {
+  font-family: 'Manrope', sans-serif !important;
+  font-size: 15.5px !important;
+  font-weight: 700 !important;
+  color: #111111 !important;
+}
+
+.voice-author-role {
+  font-size: 13px !important;
+  color: #777777 !important;
+}
+
+.client-voices-closing-note {
+  max-width: 680px !important;
+  margin: 0 auto !important;
+  text-align: right !important;
+  font-family: 'Manrope', sans-serif !important;
+  font-size: 14.5px !important;
+  line-height: 1.65 !important;
+  color: #777777 !important;
+}
+
+/* =============================================================
+   RESPONSIVE DESIGN RULES FOR ABOUT US PAGE
+   ============================================================= */
+@media (max-width: 1024px) {
+  .about-trio-showcase {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 16px !important;
+  }
+  .trio-card {
+    height: 380px !important;
+  }
+  .leadership-grid {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+  .leadership-photo-card {
+    height: 440px !important;
+  }
+  .why-choose-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+  .why-choose-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .client-voices-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-hero-reference {
+    padding: 100px 0 40px 0 !important;
+  }
+  .about-client-strip {
+    gap: 20px !important;
+  }
+  .about-trio-showcase {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+  .trio-col-wrap {
+    transform: none !important;
+  }
+  .trio-col-2 {
+    margin-top: 0 !important;
+  }
+  .trio-card {
+    height: 340px !important;
+  }
+  .leadership-photo-card {
+    height: 360px !important;
+  }
+  .why-choose-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .why-choose-card {
+    padding: 32px 24px !important;
+  }
+  .why-choose-card:nth-child(n) {
+    border-right: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  }
+  .why-choose-card:last-child {
+    border-bottom: none !important;
+  }
+  .why-choose-bottom-stats {
+    flex-direction: column !important;
+    gap: 12px !important;
+    align-items: flex-start !important;
+  }
+  .page-hero-stage, .why-choose-dark-section {
+    width: 100% !important;
+    margin: 0 0 24px 0 !important;
+    border-radius: var(--radius-lg) !important;
+    padding: 4.5rem 1.5rem 2rem 1.5rem !important;
+  }
+  .client-voices-closing-note {
+    text-align: left !important;
+  }
 }

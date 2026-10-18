@@ -1,7 +1,116 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { clientAvatars } from '../data/portfolioData';
 
+gsap.registerPlugin(ScrollTrigger);
+
+const titleLine1 = ['Why', 'choose', 'me', 'as', 'your', '–'];
+const titleLine2 = [
+  { text: 'Personal', italic: true },
+  { text: 'Photographer', italic: true },
+];
+
 export default function WhyChooseMe() {
+  const headingRef = useRef(null);
+  const fanCardRef = useRef(null);
+  const fanStatRef = useRef(null);
+  const satisfactionCardRef = useRef(null);
+  const satisfactionStatRef = useRef(null);
+  const returnCardRef = useRef(null);
+  const returnStatRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // 1. Text Stagger Animation for heading
+      const words = headingRef.current?.querySelectorAll('.why-title-word');
+      if (words && words.length) {
+        gsap.fromTo(
+          words,
+          {
+            opacity: 0,
+            y: 30,
+            filter: 'blur(7px)',
+          },
+          {
+            opacity: 1,
+            y: 0,
+            filter: 'blur(0px)',
+            duration: 0.85,
+            ease: 'power3.out',
+            stagger: 0.045,
+            scrollTrigger: {
+              trigger: headingRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      }
+
+      // 2. Counter animation helper
+      const setupCounter = (element, targetVal, duration, formatFn, triggerEl) => {
+        if (!element || !triggerEl) return;
+        const proxy = { val: 0 };
+        const tween = gsap.fromTo(
+          proxy,
+          { val: 0 },
+          {
+            val: targetVal,
+            duration: duration,
+            ease: 'power2.out',
+            paused: true,
+            onUpdate: () => {
+              element.textContent = formatFn(Math.round(proxy.val));
+            },
+          }
+        );
+
+        ScrollTrigger.create({
+          trigger: triggerEl,
+          start: 'top 85%',
+          onEnter: () => {
+            proxy.val = 0;
+            tween.restart();
+          },
+          onEnterBack: () => {
+            proxy.val = 0;
+            tween.restart();
+          },
+        });
+      };
+
+      // 3. Counter for Fan Card: 3,699+
+      setupCounter(
+        fanStatRef.current,
+        3699,
+        1.8,
+        (v) => `${v.toLocaleString()}+`,
+        fanCardRef.current
+      );
+
+      // 4. Counter for Satisfaction Card: 100+
+      setupCounter(
+        satisfactionStatRef.current,
+        100,
+        1.5,
+        (v) => `${v}+`,
+        satisfactionCardRef.current
+      );
+
+      // 5. Counter for Return Rate Card: 30%
+      setupCounter(
+        returnStatRef.current,
+        30,
+        1.4,
+        (v) => `${v}%`,
+        returnCardRef.current
+      );
+    });
+
+    return () => ctx.revert();
+  }, []);
+
   const streamRow1 = [
     'photos/5QD4gq8SXUlDrEqPWmWKw4gsB0Y.webp',
     'photos/hMH3wtZnELIRTERjHWcZy4tHu0.webp',
@@ -29,11 +138,29 @@ export default function WhyChooseMe() {
   return (
     <section id="why-choose-me" className="why-section">
       <div className="container">
-        {/* Section Heading */}
-        <div className="why-heading-container">
+        {/* Section Heading with Stagger Animation */}
+        <div className="why-heading-container" ref={headingRef}>
           <h2 className="why-main-title">
-            Why choose me as your -<br />
-            <span className="serif-italic">Personal Photographer</span>
+            <span className="why-title-line">
+              {titleLine1.map((word, idx) => (
+                <span
+                  key={idx}
+                  className="why-title-word"
+                >
+                  {word}
+                </span>
+              ))}
+            </span>
+            <span className="why-title-line">
+              {titleLine2.map((item, idx) => (
+                <span
+                  key={idx}
+                  className={`why-title-word ${item.italic ? 'serif-italic' : ''}`}
+                >
+                  {item.text}
+                </span>
+              ))}
+            </span>
           </h2>
         </div>
 
@@ -42,7 +169,7 @@ export default function WhyChooseMe() {
           {/* Row 1: Fan Card + 10-Photo Collage */}
           <div className="bento-row-top">
             {/* Card 1: Fan Card (3,699+ Photos) */}
-            <div className="bento-card bento-fan-card">
+            <div className="bento-card bento-fan-card" ref={fanCardRef}>
               <div className="fan-watermark">
                 <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <circle cx="12" cy="12" r="10" stroke="#d5d5d5" />
@@ -67,7 +194,7 @@ export default function WhyChooseMe() {
               </div>
 
               <div className="fan-text-footer">
-                <div className="fan-stat-number">3,699+</div>
+                <div className="fan-stat-number" ref={fanStatRef}>3,699+</div>
                 <p className="fan-stat-label">Photos taken, each telling a unique story</p>
               </div>
             </div>
@@ -160,9 +287,9 @@ export default function WhyChooseMe() {
               </div>
 
               {/* 100+ Satisfaction Clients Card */}
-              <div className="bento-card satisfaction-card">
+              <div className="bento-card satisfaction-card" ref={satisfactionCardRef}>
                 <div className="satisfaction-info">
-                  <div className="satisfaction-number">100+</div>
+                  <div className="satisfaction-number" ref={satisfactionStatRef}>100+</div>
                   <p className="satisfaction-label">Satisfaction client's</p>
                 </div>
                 <div className="satisfaction-avatars">
@@ -181,8 +308,8 @@ export default function WhyChooseMe() {
 
             {/* Col 3: 30% Return Rate + Reel to Reel Tape Deck */}
             <div className="bento-col bento-col-right">
-              <div className="bento-card return-stat-card">
-                <div className="return-stat-number">30%</div>
+              <div className="bento-card return-stat-card" ref={returnCardRef}>
+                <div className="return-stat-number" ref={returnStatRef}>30%</div>
                 <p className="return-stat-label">
                   Clients book another session <span className="highlight-word">within</span> a year
                 </p>

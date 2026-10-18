@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import StaggerTitle from './StaggerTitle';
 
 const carouselPhotos = [
   { id: 1, src: 'photos/33MV0IZmK3REFJalk6IMW9hZ8.webp', title: 'Street Cafe Culture', tag: 'Editorial' },
@@ -154,7 +155,9 @@ export default function RibbonShowcase() {
   return (
     <section className="ribbon-showcase-section" id="gallery-3d">
       <div className="ribbon-outer-header">
-        <h3 className="ribbon-subheading">Visual Journey &mdash; 3D Showcase</h3>
+        <StaggerTitle as="h3" className="ribbon-subheading">
+          Visual Journey &mdash; 3D Showcase
+        </StaggerTitle>
         <p className="ribbon-drag-hint">Full-Screen 3D Panorama &bull; Drag to rotate or use navigation arrows</p>
       </div>
 

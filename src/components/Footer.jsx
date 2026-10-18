@@ -11,8 +11,8 @@ export default function Footer() {
       </div>
       <ul className="footer-links-row">
         <li><Link to="/">Home</Link></li>
-        <li><Link to="/about">About</Link></li>
-        <li><Link to="/projects">Projects</Link></li>
+        <li><Link to="/about">About Us</Link></li>
+        <li><Link to="/projects">Portfolio</Link></li>
         <li><Link to="/services">Services</Link></li>
         <li><Link to="/reviews">Reviews</Link></li>
         <li><Link to="/faq">FAQ</Link></li>

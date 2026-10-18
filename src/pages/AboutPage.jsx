@@ -1,301 +1,478 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Camera, Film, Sun, Award, Play, Pause, Maximize2, ArrowUpRight } from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import {
+  Target,
+  Lightbulb,
+  Clock,
+  Feather,
+  Zap,
+  HeartHandshake,
+} from 'lucide-react';
+import StaggerTitle from '../components/StaggerTitle';
+import PageHeroStage from '../components/PageHeroStage';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const quoteWords = [
-  { text: "“I", italic: false },
-  { text: "don't", italic: false },
-  { text: "simply", italic: false },
-  { text: "click", italic: false },
-  { text: "pictures", italic: true },
-  { text: "I", italic: false },
-  { text: "preserve", italic: false },
-  { text: "genuine", italic: false },
-  { text: "emotions,", italic: true },
-  { text: "fleeting", italic: false },
-  { text: "memories,", italic: false },
-  { text: "and", italic: false },
-  { text: "hidden", italic: false },
-  { text: "stories", italic: false },
-  { text: "that", italic: false },
-  { text: "bring", italic: true },
-  { text: "life", italic: true },
-  { text: "to", italic: false },
-  { text: "every", italic: false },
-  { text: "shot.”", italic: false }
-];
-
 export default function AboutPage({ onOpenChat }) {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [activeGearTab, setActiveGearTab] = useState('bodies');
-  const quoteRef = useRef(null);
+  const trioContainerRef = useRef(null);
+  const cardCol1Ref = useRef(null);
+  const cardCol2Ref = useRef(null);
+  const cardCol3Ref = useRef(null);
+
+  const whySectionRef = useRef(null);
+  const whyBgCanvasRef = useRef(null);
+  const whyGridRef = useRef(null);
 
   useEffect(() => {
-    const quoteEl = quoteRef.current;
-    if (!quoteEl) return;
+    // 1. Fixed Background Canvas for Why Choose Section (Home screen type vertical frame scrolling)
+    const whyEl = whySectionRef.current;
+    const whyCanvas = whyBgCanvasRef.current;
 
+    let ticking = false;
+
+    const handleWhyScroll = () => {
+      if (!whyEl || !whyCanvas) return;
+      const scrollY = window.scrollY || window.pageYOffset;
+      const rect = whyEl.getBoundingClientRect();
+
+      if (rect.top <= window.innerHeight + 100 && rect.bottom >= -150) {
+        const offset = scrollY - (whyEl.offsetTop || 0);
+        whyCanvas.style.transform = `translate3d(0, ${offset}px, 0)`;
+      }
+      ticking = false;
+    };
+
+    const onWhyScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(handleWhyScroll);
+        ticking = true;
+      }
+    };
+
+    handleWhyScroll();
+    window.addEventListener('scroll', onWhyScroll, { passive: true });
+    window.addEventListener('resize', onWhyScroll, { passive: true });
+    if (window.__lenis) {
+      window.__lenis.on('scroll', onWhyScroll);
+    }
+
+    // 2. GSAP Animations for Trio Parallax & Why Choose Cards
     const ctx = gsap.context(() => {
-      const words = quoteEl.querySelectorAll('.reveal-word');
-      if (words.length) {
+      const isDesktop = window.innerWidth > 768;
+
+      const trioCards = [cardCol1Ref.current, cardCol2Ref.current, cardCol3Ref.current].filter(Boolean);
+      if (trioCards.length && trioContainerRef.current) {
         gsap.fromTo(
-          words,
-          {
-            opacity: 0,
-            y: 28,
-            filter: 'blur(8px)',
-          },
+          trioCards,
+          { opacity: 0, y: 60, scale: 0.96 },
           {
             opacity: 1,
             y: 0,
-            filter: 'blur(0px)',
-            duration: 0.85,
+            scale: 1,
+            stagger: 0.15,
+            duration: 1.1,
             ease: 'power3.out',
-            stagger: 0.038,
             scrollTrigger: {
-              trigger: quoteEl,
-              start: 'top 82%',
-              toggleActions: 'play none none reverse',
+              trigger: trioContainerRef.current,
+              start: 'top 85%',
             },
           }
         );
+
+        if (isDesktop) {
+          gsap.to(cardCol1Ref.current, {
+            y: -50,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: trioContainerRef.current,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 1.2,
+            },
+          });
+
+          gsap.to(cardCol2Ref.current, {
+            y: -110,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: trioContainerRef.current,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 1.2,
+            },
+          });
+
+          gsap.to(cardCol3Ref.current, {
+            y: -65,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: trioContainerRef.current,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 1.2,
+            },
+          });
+        }
+      }
+
+      if (whyGridRef.current) {
+        const cards = whyGridRef.current.querySelectorAll('.why-choose-card');
+        if (cards && cards.length) {
+          gsap.fromTo(
+            cards,
+            { opacity: 0, y: 45, scale: 0.97 },
+            {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              stagger: 0.09,
+              duration: 0.85,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: whyGridRef.current,
+                start: 'top 80%',
+              },
+            }
+          );
+        }
       }
     });
 
-    return () => ctx.revert();
+    return () => {
+      window.removeEventListener('scroll', onWhyScroll);
+      window.removeEventListener('resize', onWhyScroll);
+      if (window.__lenis) {
+        window.__lenis.off('scroll', onWhyScroll);
+      }
+      ctx.revert();
+    };
   }, []);
 
-  const gearData = {
-    bodies: [
-      { name: 'Leica M11 Monochrom', desc: 'Pure black and white rangefinder with 60MP sensor for uncompromising documentary grit.', tag: 'Primary Rangefinder' },
-      { name: 'Hasselblad 907X 50C', desc: 'Medium format digital back for expansive tonal transitions and hyper-detailed portraiture.', tag: 'Medium Format' },
-      { name: 'Leica MP 35mm (Film)', desc: 'Mechanical film body loaded with Kodak Tri-X 400 for authentic silver halide grain.', tag: 'Analog 35mm' }
-    ],
-    lenses: [
-      { name: 'Leica 35mm Summilux-M f/1.4', desc: 'The documentary master lens — intimate environmental portraits with cinematic falloff.', tag: 'Documentary Prime' },
-      { name: 'Leica 50mm Noctilux-M f/0.95', desc: 'Dreamlike subject separation and ultra low-light performance without artificial flash.', tag: 'Atmospheric Prime' },
-      { name: 'Hasselblad XCD 80mm f/1.9', desc: 'Razor-sharp medium format portrait lens with cream-smooth out-of-focus highlights.', tag: 'Studio Portrait' }
-    ],
-    lighting: [
-      { name: 'Profoto B10X Plus (500W)', desc: 'Cordless battery strobes mimicking high-noon desert sun or gentle window spill.', tag: 'Strobe Rig' },
-      { name: 'Nanlite Pavotube II 30X', desc: 'Continuous RGB tube lights for subtle moody rim lighting in twilight shoots.', tag: 'Continuous Light' },
-      { name: 'Matthews C-Stands and Silks', desc: 'Cinema-grade diffusion flags softening hard natural sunlight outdoors.', tag: 'Grip and Diffusion' }
-    ],
-    film: [
-      { name: 'Kodak Portra 400 (120 & 35mm)', desc: 'Legendary skin tone rendition with subtle pastel warmth under golden hour rays.', tag: 'Color Negative' },
-      { name: 'Kodak Tri-X 400 Monochrome', desc: 'High-contrast monochrome film with deep blacks and unmistakable vintage grain structure.', tag: 'Classic B&W' },
-      { name: 'CineStill 800Tungsten', desc: 'Cinema movie film with unique red halation around high-contrast night street lamps.', tag: 'Night & Neon' }
-    ]
-  };
-
-  const timeline = [
-    { year: '2018', title: 'Brooklyn Darkroom Roots', desc: 'Began hand-developing 35mm street rolls in a Bushwick loft, learning to read natural light without meters.' },
-    { year: '2021', title: 'Vogue & Editorial Recognition', desc: 'Commissioned for high-fashion lookbooks and published in international contemporary photography journals.' },
-    { year: '2024', title: 'Global Documentary Studio', desc: 'Covered 100+ private weddings and architectural campaigns spanning Zurich, Kyoto, Paris, and Big Sur.' },
-    { year: '2026', title: 'Capture Atelier Launch', desc: 'Full-service visual studio delivering heirloom print albums, 4K behind-the-scenes film, and private galleries.' }
+  const clientLogos = [
+    { name: 'EOS', icon: '✦' },
+    { name: 'Cooperative', icon: '❖' },
+    { name: '45 Degrees°', icon: '↗' },
+    { name: 'LaunchSimple', icon: '◬' },
+    { name: 'Frequencii', icon: '◈' },
+    { name: 'Vogue Atelier', icon: '●' },
   ];
+
+  const trioShowcase = [
+    {
+      id: 1,
+      image: '/photos/atJSGWOSmoPWXD4zqFDhjEhPltc.webp',
+      tag: 'Documentary Wedding',
+      title: 'Lake Como Nuptials',
+      ref: cardCol1Ref,
+      customClass: 'trio-col-1',
+    },
+    {
+      id: 2,
+      image: '/photos/EDjXZUxH9PUJ4Sc3htDzn89mi0.webp',
+      tag: 'Cinematic Fashion',
+      title: 'Crimson Desert Horizon',
+      ref: cardCol2Ref,
+      customClass: 'trio-col-2',
+    },
+    {
+      id: 3,
+      image: '/photos/5WjX1vJg991GRNOY7QwweeYhYUA.webp',
+      tag: '4K Cinema Still',
+      title: 'Milan Twilight Cruise',
+      ref: cardCol3Ref,
+      customClass: 'trio-col-3',
+    },
+  ];
+
+  const whyChooseFeatures = [
+    {
+      num: '01',
+      title: 'One-Stop Solution',
+      desc: 'Comprehensive visual services for both high-resolution Photography and 4K Cinema Video Editing under one roof, ensuring complete stylistic harmony.',
+      icon: Target,
+    },
+    {
+      num: '02',
+      title: 'Innovative Budget Designs',
+      desc: 'Creative production and post-production solutions tailored to fit within your specified budget without compromising on editorial caliber.',
+      icon: Lightbulb,
+    },
+    {
+      num: '03',
+      title: 'Consistent Delivery',
+      desc: 'Timely and disciplined turnaround schedules with sneak peek delivery within 48 hours, backed by strict color-grading pipeline management.',
+      icon: Clock,
+    },
+    {
+      num: '04',
+      title: 'Proven Experience',
+      desc: 'Successfully documented over 300 spaces and 1,000+ projects across 18 years in luxury weddings, international fashion, and commercial spaces.',
+      icon: Feather,
+    },
+    {
+      num: '05',
+      title: 'Latest Technology',
+      desc: 'Tech-integrated editing suites featuring calibrated DaVinci color grading, Apple ProRes 4444 master exports, and custom audio foley scoring.',
+      icon: Zap,
+    },
+    {
+      num: '06',
+      title: 'Post-Project Service',
+      desc: 'Dedicated archival support and maintenance services even after your project is completed and handed over, including private cloud access forever.',
+      icon: HeartHandshake,
+    },
+  ];
+
+  const clientReviews = [
+    {
+      id: 1,
+      quote:
+        '""Unlike many beiges, this color has undertones of gray that can give your space a warm, snug feel. Pair it with earthy tones for a balanced and natural look.""',
+      name: 'Runa Long',
+      role: 'Painter & Fine Artist',
+      initial: 'R',
+    },
+    {
+      id: 2,
+      quote:
+        '"We felt heard and understood at every step. Their design and video editing choices not only impressed—but told our story in ways we never could with words alone."',
+      name: 'Sophie Lang',
+      role: 'AI Engineer & Studio Founder',
+      initial: 'S',
+    },
+    {
+      id: 3,
+      quote:
+        '"Their work brought our entire brand to life—subtle, thoughtful, and timeless. Every element felt carefully crafted, both visually and emotionally."',
+      name: 'Amelia Hart',
+      role: 'Vale Studio Director',
+      initial: 'A',
+    },
+  ];
+
+  const scrollToLeadership = () => {
+    const el = document.querySelector('.about-leadership-section');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
     <div className="page-wrapper about-detail-page">
-      {/* Dedicated Page Hero Header */}
-      <section className="page-header-hero">
+      {/* =========================================================
+          SECTION 1: HOME SCREEN HERO STAGE WITH FIXED VERTICAL SCROLLING FRAME
+          ========================================================= */}
+      <PageHeroStage
+        titleMain="about®"
+        titleTag="Vision & Heritage"
+        description="A leading team of photographers, cinematographers, and colorists providing superior visual space-planning, heirloom installations, and cinematic storytelling worldwide since 2003."
+        bgImage="/photos/atJSGWOSmoPWXD4zqFDhjEhPltc.webp"
+        cardImage="/photos/y6nsXyFCXVHybL6AG2drPt8Xug.webp"
+        cardTitle={"Mr. Alex Rivera\nManaging Director & Lead Editor"}
+        cardSubtitle="Over 18 Years Legacy"
+        cardButtonText="Meet Founder"
+        onCardButtonClick={scrollToLeadership}
+        badgeText="Documenting Spaces Since 2003"
+      />
+
+      {/* Brand Partners Strip & 3-Photo Vertical Parallax Showcase */}
+      <section className="about-hero-reference">
         <div className="page-container">
-          <div className="page-eyebrow-pill">
-            <Award size={15} />
-            <span>Documentary & Editorial Atelier</span>
+          <div className="about-client-strip" aria-label="Brand Partners">
+            {clientLogos.map((brand, idx) => (
+              <div key={idx} className="client-strip-logo">
+                <span>{brand.icon}</span>
+                <span>{brand.name}</span>
+              </div>
+            ))}
           </div>
-          <h1 className="page-hero-title">
-            Preserving genuine <span className="serif-italic">emotions</span>,<br />
-            fleeting memories & untold stories.
-          </h1>
-          <p className="page-hero-subtitle">
-            Alex Rivera is an international documentary photographer specializing in raw, unposed weddings,
-            cinematic editorial spreads, and brand storytelling across the globe.
-          </p>
+
+          <div className="about-trio-showcase" ref={trioContainerRef}>
+            {trioShowcase.map((card) => (
+              <div
+                key={card.id}
+                ref={card.ref}
+                className={`trio-col-wrap ${card.customClass}`}
+              >
+                <div className="trio-card">
+                  <img src={card.image} alt={card.title} className="trio-img" loading="lazy" />
+                  <div className="trio-card-overlay">
+                    <span className="trio-card-tag">{card.tag}</span>
+                    <h3 className="trio-card-title">{card.title}</h3>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Philosophy & Video HUD Section */}
-      <section className="about-core-section">
-        <div className="page-container">
-          <div className="about-header-grid">
-            <div className="about-badge-col">
-              <div className="aperture-badge">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83M16.62 12l-5.74 9.94" />
-                </svg>
-                <span>The Philosophy</span>
-              </div>
-            </div>
-            <div className="about-quote-col">
-              <h2 className="about-quote" ref={quoteRef}>
-                {quoteWords.map((item, idx) => (
-                  <React.Fragment key={idx}>
-                    <span
-                      className={`reveal-word ${item.italic ? 'serif-italic' : ''}`}
-                      style={{ display: 'inline-block', willChange: 'transform, opacity, filter' }}
-                    >
-                      {item.text}
-                    </span>{' '}
-                  </React.Fragment>
-                ))}
-              </h2>
-            </div>
-          </div>
+      {/* =========================================================
+          SECTION 2: THE LEADERSHIP / PRINCIPAL
+          ========================================================= */}
+      <section className="about-leadership-section">
+        <div className="leadership-watermark" aria-hidden="true">
+          PRINCIPAL
+        </div>
 
-          <div className="about-content-grid">
-            <div className="about-video-box">
+        <div className="page-container">
+          <div className="leadership-grid">
+            {/* Left Column: Rounded Founder Portrait */}
+            <div className="leadership-photo-card">
               <img
-                src="/photos/ATfEhhE5N93aBRRVAnYeNawpHVA.webp"
-                alt="Alex Rivera with camera"
-                className="about-video-img"
+                src="/photos/y6nsXyFCXVHybL6AG2drPt8Xug.webp"
+                alt="Founder Alex Rivera"
+                className="leadership-photo-img"
               />
-              <div className="video-player-bar">
-                <button
-                  type="button"
-                  className="video-play-btn"
-                  onClick={() => setIsPlaying(!isPlaying)}
-                  aria-label={isPlaying ? 'Pause video' : 'Play video'}
-                >
-                  {isPlaying ? (
-                    <Pause size={13} fill="white" color="white" />
-                  ) : (
-                    <Play size={13} fill="white" color="white" style={{ marginLeft: '1px' }} />
-                  )}
-                </button>
-                <span className="video-timer">0:00 / 0:09</span>
-                <div className="video-scrubber">
-                  <div
-                    className="video-scrubber-progress"
-                    style={{ width: isPlaying ? '65%' : '0%' }}
-                  />
-                </div>
-                <button type="button" className="video-icon-btn" aria-label="Fullscreen">
-                  <Maximize2 size={13} />
-                </button>
-              </div>
             </div>
 
-            <div className="about-narrative-box">
-              <p className="about-description">
-                Photography for me has never been about rigid poses or artificial smiles. It is about the subtle pause between breaths, the unscripted teardrop during private vows, and the raw, electric energy of two souls who forgot the camera even existed.
+            {/* Right Column: Founder Bio & Expertise Card */}
+            <div className="leadership-info-col">
+              <span className="leadership-eyebrow">THE LEADERSHIP</span>
+
+              <StaggerTitle as="h2" className="leadership-name">
+                Mr. Alex Rivera
+              </StaggerTitle>
+
+              <span className="leadership-role">MANAGING DIRECTOR & FOUNDER &bull; LEAD VIDEO EDITOR</span>
+
+              <p className="leadership-bio-text">
+                An alumnus of <strong>L S Raheja</strong> and the visionary founder of <strong>capture&reg; and Edit</strong>,
+                Alex leads our studio with a focus on resourcing and team excellence across photography, cinematography,
+                and post-production video editing.
               </p>
-              <p className="about-description" style={{ marginTop: '-16px' }}>
-                Every assignment is treated with deep editorial reverence. Whether shooting on 35mm film or high-fidelity medium format digital, the goal is always singular: crafting photographs that still take your breath away three decades from today.
+
+              <p className="leadership-bio-text">
+                He meticulously oversees the narrative pacing, audio mastering, and color timing of the organization,
+                ensuring every project is supported by the best artistic talent and highest technical fidelity.
               </p>
-              <div className="about-chat-row">
-                <button
-                  type="button"
-                  className="about-chat-text-btn"
-                  onClick={onOpenChat}
-                >
-                  Let's chat &rarr;
-                </button>
+
+              {/* Black Rounded Expertise Card */}
+              <div className="leadership-expertise-box">
+                <span className="expertise-label">EXPERTISE</span>
+                <p className="expertise-statement">
+                  Over <strong>18 years</strong> of creating unique identities through signature color timing,
+                  narrative editing, and architectural precision.
+                </p>
               </div>
+
+              {/* Quote Underneath */}
+              <blockquote className="leadership-quote">
+                &ldquo;Detailing is not just a part of the process—it's the identity of the space and the soul of the memory.&rdquo;
+              </blockquote>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Interactive Gear Bag Section */}
-      <section className="about-gear-section">
-        <div className="page-container">
-          <div className="gear-header-center">
-            <span className="section-sublabel">THE TOOLKIT</span>
-            <h2 className="section-title">
-              Inside the <span className="serif-italic">Camera Bag</span>
-            </h2>
-            <p className="section-subtext">
-              Precision optics and analog mechanics chosen specifically for their rendering of skin, shadow, and natural atmosphere.
+      {/* =========================================================
+          SECTION 3: WHY CHOOSING CAPTURE & EDIT? WITH HOME SCREEN FRAME ANIMATION
+          ========================================================= */}
+      <section className="why-choose-dark-section" ref={whySectionRef}>
+        {/* Fixed Background Canvas for Vertical Window-Frame Scrolling */}
+        <div className="why-choose-bg-fixed-canvas hero-bg-fixed-canvas" ref={whyBgCanvasRef}>
+          <img
+            src="/photos/PtOmfIDqFPfLwMMucdVIw0jwKwk.webp"
+            alt="Cinematic background atmosphere"
+            className="why-choose-bg-media hero-bg-media"
+          />
+          <div className="why-choose-overlay hero-overlay" />
+        </div>
+
+        {/* Decorative Crosshair Row matching home screen */}
+        <div className="hero-crosshair-row" aria-hidden="true">
+          <span className="cross-mark">+</span>
+          <span className="cross-mark">+</span>
+          <span className="cross-dot" />
+          <span className="cross-mark">+</span>
+          <span className="cross-mark">+</span>
+        </div>
+
+        <div className="page-container why-choose-container">
+          <div className="why-choose-header">
+            <div>
+              <StaggerTitle as="h2" className="why-choose-title">
+                Why choosing CAN Designs?
+              </StaggerTitle>
+            </div>
+            <p className="why-choose-sub">
+              A synergy of two decades of heritage and future-ready innovation.
             </p>
           </div>
 
-          <div className="gear-tabs-nav">
-            <button
-              className={'gear-tab-btn ' + (activeGearTab === 'bodies' ? 'active' : '')}
-              onClick={() => setActiveGearTab('bodies')}
-            >
-              <Camera size={16} /> Bodies
-            </button>
-            <button
-              className={'gear-tab-btn ' + (activeGearTab === 'lenses' ? 'active' : '')}
-              onClick={() => setActiveGearTab('lenses')}
-            >
-              <Sun size={16} /> Prime Lenses
-            </button>
-            <button
-              className={'gear-tab-btn ' + (activeGearTab === 'lighting' ? 'active' : '')}
-              onClick={() => setActiveGearTab('lighting')}
-            >
-              <Award size={16} /> Studio Lighting
-            </button>
-            <button
-              className={'gear-tab-btn ' + (activeGearTab === 'film' ? 'active' : '')}
-              onClick={() => setActiveGearTab('film')}
-            >
-              <Film size={16} /> Film Stocks
-            </button>
+          {/* 6-Grid Feature Cards with Entrance Stagger and Static Frame Inset */}
+          <div className="why-choose-grid" ref={whyGridRef}>
+            {whyChooseFeatures.map((feat) => {
+              const IconComp = feat.icon;
+              return (
+                <div key={feat.num} className="why-choose-card">
+                  <div>
+                    <div className="card-icon-num-row">
+                      <IconComp className="card-feature-icon" strokeWidth={1.8} />
+                      <span className="card-num-watermark">{feat.num}</span>
+                    </div>
+                    <h3 className="card-feature-title">{feat.title}</h3>
+                  </div>
+                  <p className="card-feature-desc">{feat.desc}</p>
+                </div>
+              );
+            })}
           </div>
 
-          <div className="gear-grid">
-            {gearData[activeGearTab].map((item, idx) => (
-              <div key={idx} className="gear-card">
-                <div className="gear-card-top">
-                  <span className="gear-tag">{item.tag}</span>
-                  <span className="gear-number">{idx + 1 < 10 ? '0' + (idx + 1) : idx + 1}</span>
-                </div>
-                <h3 className="gear-name">{item.name}</h3>
-                <p className="gear-desc">{item.desc}</p>
-              </div>
-            ))}
+          {/* Bottom Legacy Stats Banner */}
+          <div className="why-choose-bottom-stats">
+            <div>
+              <span className="stat-dot-separator">&#9679;</span>
+              <span>18 YEARS OF LEGACY</span>
+            </div>
+            <div>
+              <span>300+ RESIDENTIAL & CORPORATE PROJECTS</span>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Creative Journey Timeline */}
-      <section className="about-timeline-section">
+      {/* =========================================================
+          SECTION 4: CLIENT VOICES
+          ========================================================= */}
+      <section className="client-voices-section">
         <div className="page-container">
-          <div className="timeline-header-center">
-            <span className="section-sublabel">JOURNEY</span>
-            <h2 className="section-title">
-              Milestones & <span className="serif-italic">Evolution</span>
-            </h2>
+          <div className="client-voices-header">
+            <StaggerTitle as="h2" className="client-voices-title">
+              Client Voices
+            </StaggerTitle>
+            <p className="client-voices-sub">
+              Real feedback from the people we've had the pleasure to design for. Their words reflect the impact of our work.
+            </p>
           </div>
 
-          <div className="timeline-list">
-            {timeline.map((step, idx) => (
-              <div key={idx} className="timeline-row">
-                <div className="timeline-year-col">
-                  <span className="timeline-year-badge">{step.year}</span>
+          {/* 3 Review Cards */}
+          <div className="client-voices-grid">
+            {clientReviews.map((rev) => (
+              <div key={rev.id} className="voice-card">
+                <div>
+                  <div className="voice-stars-row">
+                    {[...Array(5)].map((_, i) => (
+                      <span key={i}>&#9733;</span>
+                    ))}
+                  </div>
+                  <p className="voice-quote-text">{rev.quote}</p>
                 </div>
-                <div className="timeline-content-col">
-                  <h4 className="timeline-step-title">{step.title}</h4>
-                  <p className="timeline-step-desc">{step.desc}</p>
+
+                <div className="voice-author-row">
+                  <div className="voice-avatar-initial">{rev.initial}</div>
+                  <div className="voice-author-info">
+                    <span className="voice-author-name">{rev.name}</span>
+                    <span className="voice-author-role">{rev.role}</span>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* Bottom Booking CTA Banner */}
-      <section className="page-cta-banner">
-        <div className="page-container">
-          <div className="cta-banner-card">
-            <h3 className="cta-banner-title">
-              Have an upcoming project, wedding, or lookbook?
-            </h3>
-            <p className="cta-banner-subtext">
-              Available worldwide for private commissions and commercial assignments.
-            </p>
-            <button type="button" className="cta-banner-btn" onClick={onOpenChat}>
-              <span>Book a Consultation</span>
-              <ArrowUpRight size={18} />
-            </button>
-          </div>
+          {/* Bottom Collaborative Statement */}
+          <p className="client-voices-closing-note">
+            Exceptional design is a team effort. We collaborate closely to bring aligned, thoughtful results that not only meet but transcend expectations.
+          </p>
         </div>
       </section>
     </div>

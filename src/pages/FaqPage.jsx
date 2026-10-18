@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { HelpCircle, Search, Plus, Minus, ArrowUpRight, MessageCircle } from 'lucide-react';
+import StaggerTitle from '../components/StaggerTitle';
+import PageHeroStage from '../components/PageHeroStage';
 
 export default function FaqPage({ onOpenChat }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -94,21 +96,23 @@ export default function FaqPage({ onOpenChat }) {
 
   return (
     <div className="page-wrapper faq-detail-page">
-      {/* Hero Header */}
-      <section className="page-header-hero">
-        <div className="page-container">
-          <div className="page-eyebrow-pill">
-            <HelpCircle size={15} />
-            <span>Knowledge Base & Shoot Guide</span>
-          </div>
-          <h1 className="page-hero-title">
-            Frequently asked questions & <br />
-            <span className="serif-italic">commission guide</span>.
-          </h1>
-          <p className="page-hero-subtitle">
-            Everything you need to know about the creative workflow, booking procedures, deliverables, and on-location policies.
-          </p>
+      {/* Home Screen Type Stage Frame */}
+      <PageHeroStage
+        titleMain="inquiries®"
+        titleTag="Studio Knowledge"
+        description="Everything you need to know about the creative workflow, booking procedures, deliverables, rights licensing, and on-location policies."
+        bgImage="/photos/5WjX1vJg991GRNOY7QwweeYhYUA.webp"
+        cardImage="/photos/PtOmfIDqFPfLwMMucdVIw0jwKwk.webp"
+        cardTitle={"Frequently Asked\nQuestions"}
+        cardSubtitle="Instant Answers"
+        cardButtonText="Ask Alex"
+        onCardButtonClick={onOpenChat}
+        badgeText="Immediate Answers & Support"
+      />
 
+      {/* Search & Category Filter Section */}
+      <section className="faq-search-section">
+        <div className="page-container">
           {/* Live Search Bar */}
           <div className="faq-search-wrapper">
             <Search size={18} className="faq-search-icon" />
@@ -125,7 +129,7 @@ export default function FaqPage({ onOpenChat }) {
           </div>
 
           {/* Category Filter Pills */}
-          <div className="projects-filter-bar" style={{ marginTop: '32px' }}>
+          <div className="projects-filter-bar" style={{ marginTop: '28px' }}>
             {categories.map((c) => (
               <button
                 key={c.id}

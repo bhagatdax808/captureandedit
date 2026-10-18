@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import StaggerTitle from './StaggerTitle';
 
 export default function Contact() {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
@@ -31,10 +32,10 @@ export default function Contact() {
 
         {/* Section Heading */}
         <div className="contact-heading-container">
-          <h2 className="contact-title">
+          <StaggerTitle as="h2" className="contact-title">
             Have questions or want to book?<br />
             <span className="serif-italic">I'm here for you.</span>
-          </h2>
+          </StaggerTitle>
         </div>
 
         {/* Contact Form Card */}

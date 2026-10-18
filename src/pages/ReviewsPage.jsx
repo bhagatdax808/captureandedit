@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Star, MessageSquare, CheckCircle, ArrowUpRight, Play, Heart } from 'lucide-react';
+import StaggerTitle from '../components/StaggerTitle';
+import PageHeroStage from '../components/PageHeroStage';
 
 export default function ReviewsPage({ onOpenChat }) {
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -72,23 +74,23 @@ export default function ReviewsPage({ onOpenChat }) {
 
   return (
     <div className="page-wrapper reviews-detail-page">
-      {/* Hero Header */}
-      <section className="page-header-hero">
-        <div className="page-container">
-          <div className="page-eyebrow-pill">
-            <Heart size={15} />
-            <span>Verified Client Praise</span>
-          </div>
-          <h1 className="page-hero-title">
-            Words from the couples & brands <br />
-            <span className="serif-italic">who trusted my lens</span>.
-          </h1>
-          <p className="page-hero-subtitle">
-            Over 1,000 completed assignments spanning 12 countries. Every testimonial reflects
-            our shared commitment to authentic emotion, quiet elegance, and unscripted memories.
-          </p>
+      {/* Home Screen Type Stage Frame */}
+      <PageHeroStage
+        titleMain="praise®"
+        titleTag="Client Words"
+        description="Over 1,000 completed assignments spanning 12 countries. Unfiltered feedback reflecting authentic emotion, quiet elegance, and heirloom memories."
+        bgImage="/photos/vLEsMK3fGOYhOVUMV0xti7bThh8.webp"
+        cardImage="/photos/y6nsXyFCXVHybL6AG2drPt8Xug.webp"
+        cardTitle={"140+ Five-Star\nClient Praise"}
+        cardSubtitle="100% Satisfaction"
+        cardButtonText="Book Now"
+        onCardButtonClick={onOpenChat}
+        badgeText="100% Client Satisfaction"
+      />
 
-          {/* High Level Stats Strip */}
+      {/* Stats & Filter Bar Section */}
+      <section className="reviews-meta-section">
+        <div className="page-container">
           <div className="reviews-stats-strip">
             <div className="stat-strip-box">
               <div className="stat-strip-val">5.0</div>
@@ -112,7 +114,7 @@ export default function ReviewsPage({ onOpenChat }) {
           </div>
 
           {/* Filter Bar */}
-          <div className="projects-filter-bar" style={{ marginTop: '48px' }}>
+          <div className="projects-filter-bar" style={{ marginTop: '40px' }}>
             {categories.map((c) => (
               <button
                 key={c.id}

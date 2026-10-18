@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { clientAvatars } from '../data/portfolioData';
+import StaggerTitle from './StaggerTitle';
 
 export default function Hero({ onOpenChat }) {
   const heroRef = useRef(null);
@@ -98,9 +99,9 @@ export default function Hero({ onOpenChat }) {
           <div className="card-bg-overlay" />
 
           <div className="card-top-content">
-            <h3 className="card-title-text">
+            <StaggerTitle as="h3" className="card-title-text" triggerStart="top 95%">
               Professional creative<br />photography
-            </h3>
+            </StaggerTitle>
           </div>
 
           <div className="card-footer-row">

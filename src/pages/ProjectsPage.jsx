@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowUpRight, Filter, X, Sliders, Eye } from 'lucide-react';
+import StaggerTitle from '../components/StaggerTitle';
+import PageHeroStage from '../components/PageHeroStage';
 
 export default function ProjectsPage({ onOpenChat }) {
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -29,23 +31,23 @@ export default function ProjectsPage({ onOpenChat }) {
 
   return (
     <div className="page-wrapper projects-archive-page">
-      {/* Page Header */}
-      <section className="page-header-hero">
-        <div className="page-container">
-          <div className="page-eyebrow-pill">
-            <Filter size={15} />
-            <span>Selected Archive</span>
-          </div>
-          <h1 className="page-hero-title">
-            Documentary commissions & <br />
-            <span className="serif-italic">visual explorations</span>.
-          </h1>
-          <p className="page-hero-subtitle">
-            From destination weddings in Lake Como to high-fashion campaigns in Milan,
-            each project is preserved in natural light, authentic grain, and timeless emotion.
-          </p>
+      {/* Home Screen Type Stage Frame */}
+      <PageHeroStage
+        titleMain="archive®"
+        titleTag="Selected Works"
+        description="Documentary commissions & visual explorations from destination weddings in Lake Como to high-fashion campaigns in Milan, preserved in authentic grain and timeless emotion."
+        bgImage="/photos/uZATchhlmCzRZorlIrEqVvh7bc.webp"
+        cardImage="/photos/EDjXZUxH9PUJ4Sc3htDzn89mi0.webp"
+        cardTitle={"Fine Art & Documentary\nPortfolio"}
+        cardSubtitle="© 2026 Archive"
+        cardButtonText="Let's chat"
+        onCardButtonClick={onOpenChat}
+        badgeText="1,000+ Projects Completed"
+      />
 
-          {/* Category Filter Pills */}
+      {/* Category Filter Bar */}
+      <section className="projects-filter-section">
+        <div className="page-container">
           <div className="projects-filter-bar">
             {categories.map((cat) => (
               <button

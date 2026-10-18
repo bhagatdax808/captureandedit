@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Plus, Minus } from 'lucide-react';
+import StaggerTitle from './StaggerTitle';
 
 const faqItems = [
   {
@@ -49,10 +50,10 @@ export default function Faq() {
             <span>FAQ</span>
           </div>
 
-          <h2 className="faq-title">
+          <StaggerTitle as="h2" className="faq-title">
             Frequently<br />
             <span className="serif-italic">asked question</span>
-          </h2>
+          </StaggerTitle>
         </div>
 
         {/* FAQ Accordion List */}

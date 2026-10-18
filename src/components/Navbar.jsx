@@ -7,11 +7,9 @@ export default function Navbar({ onOpenChat }) {
 
   const navLinks = [
     { to: '/', label: 'Home' },
-    { to: '/about', label: 'About me' },
+    { to: '/about', label: 'About Us' },
     { to: '/projects', label: 'Portfolio' },
     { to: '/services', label: 'Service' },
-    { to: '/reviews', label: 'Reviews' },
-    { to: '/faq', label: 'FAQ' },
   ];
 
   return (

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
+import StaggerTitle from './StaggerTitle';
 
 const testimonials = [
   {
@@ -74,23 +75,25 @@ export default function Testimonial() {
             <span>Testimonial</span>
           </div>
 
-          <h2 className="testimonial-title">
+          <StaggerTitle as="h2" className="testimonial-title">
             Why client's<br />
             trust me <span className="serif-italic">here</span>
-          </h2>
+          </StaggerTitle>
         </div>
 
-        {/* 2-Column Card Grid */}
+        {/* 2-Column Card Grid with Equal Sizing */}
         <div className="testimonial-grid">
           {/* Left: Quote Card */}
           <div className={"testimonial-quote-card " + (isFading ? "card-fading" : "card-visible")}>
-            <div className="star-rating">
-              {[...Array(current.stars)].map((_, i) => (
-                <span key={i} className="star">★</span>
-              ))}
-            </div>
+            <div className="testimonial-quote-body">
+              <div className="star-rating">
+                {[...Array(current.stars)].map((_, i) => (
+                  <span key={i} className="star">★</span>
+                ))}
+              </div>
 
-            <p className="quote-text">{current.quote}</p>
+              <p className="quote-text">{current.quote}</p>
+            </div>
 
             <div className="quote-footer">
               <div className="author-details">
@@ -121,6 +124,7 @@ export default function Testimonial() {
               alt={current.author}
               className={"testimonial-photo-img " + (isFading ? "card-fading" : "card-visible")}
             />
+            <div className="testimonial-photo-overlay" aria-hidden="true" />
             <div className="testimonial-nav-arrows">
               <button
                 className="nav-arrow-btn"
